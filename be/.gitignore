@@ -126,13 +126,3 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
-
-
-# --- Deploy artifacts: keep these in repo ---
-!vector_db/**
-!vector_db_law/**
-!vector_db_rule/**
-!extracted_rule/**
-!extracted_rule/images/**
-!extracted_rule/tables/**
-!extracted_rule/rules_extracted.json

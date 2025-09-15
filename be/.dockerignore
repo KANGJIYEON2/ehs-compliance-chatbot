@@ -1,0 +1,9 @@
+# be/.dockerignore
+.env
+extracted_rule/
+vector_db*/
+data/rules/*.pdf
+__pycache__/
+*.pyc
+.git
+.gitignore

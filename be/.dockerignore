@@ -1,9 +1,33 @@
-# be/.dockerignore
-.env
-extracted_rule/
-vector_db*/
-data/rules/*.pdf
-__pycache__/
-*.pyc
+# ---- keep build small but DO NOT drop our data ----
+# VCS & editor
 .git
 .gitignore
+.vscode/
+.idea/
+
+# Python trash
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pytest_cache/
+.mypy_cache/
+
+# Virtual envs
+.venv/
+venv/
+env/
+ENV/
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IMPORTANT: do NOT ignore these app assets
+# (we intentionally DO NOT put any pattern that would exclude them)
+# vector_db_law/**
+# vector_db_rule/**
+# extracted_rule/**

@@ -348,6 +348,5 @@ def reload_db(req: ReloadRequest):
 # 맨 아래
 if __name__ == "__main__":
     import uvicorn, os
-    host = "0.0.0.0"
     port = int(os.getenv("PORT", "8000"))
-    uvicorn.run("main:app", host=host, port=port, reload=False)
+    uvicorn.run("main:app", host="0.0.0.0", port=port)

@@ -753,92 +753,96 @@ GET    /api/risk/my-zone                # 내 공정/구역 위험도
 
 ## 7. 개발 로드맵
 
-### Phase 1: 기반 구축 (2주)
+### Phase 1: 기반 구축 ✅
 > 모노레포 셋업 + DB + Auth + 조직 구조
 
-- [ ] 모노레포 구조 전환 (packages/api, apps/admin, apps/worker)
-- [ ] PostgreSQL 도입 (SQLAlchemy + Alembic 마이그레이션)
-- [ ] 기업/사업장/사용자 모델 + CRUD
-- [ ] JWT 인증 (회원가입, 로그인, 토큰 갱신)
-- [ ] 권한 미들웨어 (admin / field_manager / worker)
-- [ ] 마스터 데이터 CRUD (부서, 공정, 장비, 작업구역)
-- [ ] 법령 API 분리 (외부 법령 DB or 별도 마이크로서비스)
-- [ ] admin 앱: 로그인/회원가입 UI + React Router
+- [x] 모노레포 구조 전환 (packages/api, apps/admin, apps/worker)
+- [x] SQLAlchemy + Alembic 마이그레이션 (SQLite 개발, PostgreSQL 전환 가능)
+- [x] 기업/사업장/사용자 모델 + CRUD
+- [x] JWT 인증 (회원가입, 로그인, 토큰 갱신)
+- [x] 권한 미들웨어 (admin / field_manager / worker)
+- [x] 마스터 데이터 CRUD (부서, 공정, 장비, 작업구역)
+- [x] admin 앱: 로그인/회원가입 UI + React Router + Zustand
 
-### Phase 2: 관리자 트랙 - 사고 관리 (2주)
+### Phase 2: 관리자 트랙 - 사고 관리 ✅
 > 사고 등록 + 목록 + 상세
 
-- [ ] 사고/아차사고 CRUD API
-- [ ] 파일 업로드 (로컬 → 추후 S3)
-- [ ] 사고 상태 관리 (접수 → 조치중 → 완료 → 재발관리)
-- [ ] admin 앱: 사고 등록 폼, 사고 목록 (필터/페이징), 사고 상세
+- [x] 사고/아차사고 CRUD API (9개 유형, 4단계 심각도)
+- [x] 파일 업로드 (로컬, 10MB, image/pdf)
+- [x] 사고 상태 관리 (접수 → 조치중 → 조치완료 → 재발관리)
+- [x] admin 앱: 사고 등록 폼, 사고 목록 (유형/상태 필터, 페이징), 사고 상세
 
-### Phase 3: 관리자 트랙 - AI 분석 (1.5주)
-> 예방 체크리스트 + 법령 근거 연결
+### Phase 3: 관리자 트랙 - AI 분석 ✅
+> AI Agent 아키텍처 + 예방 체크리스트 + 법령 근거
 
-- [ ] 사고 등록 시 AI 예방 체크리스트 자동 생성
-- [ ] 체크리스트 조치 추적 (완료/미완료)
-- [ ] 사고 유형 → 법령 RAG 자동 매칭
-- [ ] 법령 근거 토글 UI (사고 상세 페이지에 배치)
-- [ ] 기존 챗봇 기능을 `/api/rag/ask`로 이전
+- [x] AI Agent 아키텍처 (BaseAgent + 4개 전문 에이전트)
+- [x] IncidentAgent: 원인 분석 + 예방 체크리스트 + 재발 방지
+- [x] LawAgent: 관련 법조문 + 사업주 의무 + 처벌 요약
+- [x] AI 분석 결과 DB 캐싱 (24시간 TTL)
+- [x] 사고 상세에 3개 AI 버튼 (원인분석/체크리스트/법령근거)
+- [x] 기존 챗봇 기능을 `/api/rag/ask`로 이전
 
-### Phase 4: 관리자 트랙 - 대시보드 + 리포트 (2주)
-> 통계 + 트렌드 + AI 인사이트 + 월간 리포트
+### Phase 4: 관리자 트랙 - 대시보드 + 리포트 ✅
+> 통계 + 차트 + 뉴스 + 리포트
 
-- [ ] 사고 유형별 집계 API + 트렌드 API
-- [ ] 반복 사고 감지 + AI 패턴 분석
-- [ ] admin 앱: 대시보드 (Recharts)
-- [ ] 조치 효과 평가 (재발 시 "조치 효과 낮음")
-- [ ] 월간 안전 리포트 생성 (PDF)
+- [x] 사고 유형별/심각도별/상태별/월별 집계 API
+- [x] admin 앱: 대시보드 (Recharts Bar + Pie 차트)
+- [x] 산업안전 뉴스 RSS + NewsAgent AI 분석 (30분 캐싱)
+- [x] 월간 안전 리포트 PDF 자동 생성 (AI 요약 포함)
+- [x] 대시보드에 통계 카드 + 뉴스 피드 + PDF 다운로드 버튼
 
-### Phase 5: 작업자 트랙 - 핵심 기능 (2주)
+### Phase 5: 작업자 트랙 - 핵심 기능 ✅
 > 음성 보고 + 익명 제보 + 다국어 안내
 
-- [ ] worker PWA 앱 셋업 (모바일 최적화)
-- [ ] 음성 보고: 녹음 UI → Whisper → GPT 파싱 → 확인 → 등록
-- [ ] 익명 제보: 제보 폼 → AI 등급 분류 → 토큰 발급
-- [ ] 다국어 안전 안내: QR 스캔 → 언어 감지 → 번역 표시 → 이수 기록
-- [ ] 관리자 앱에 제보 관리 화면 추가
+- [x] VoiceAgent: Whisper STT → GPT 구조화 파싱
+- [x] 음성 보고 UI: 녹음 → 전사 → 파싱 → 리뷰 → 사고 자동 등록
+- [x] 익명 제보: 인증 없이 제보 → AI 위험등급 분류 → 토큰 발급
+- [x] 관리자 제보 관리 페이지 (조치 입력 → 제보자에게 피드백)
+- [x] 다국어 안전 안내: 한국어 원문 → GPT 번역 (vi/en/km/ne/my)
+- [x] QR코드 생성 + 공개 뷰 (인증 불필요) + 교육 이수 기록
+- [ ] worker PWA 앱 셋업 (현재 admin 앱에 통합)
 
-### Phase 6: 작업자 트랙 - 게이미피케이션 + 예측 (2주)
+### Phase 6: 작업자 트랙 - 게이미피케이션 + 예측 ✅
 > 포인트 시스템 + 위험 예측
 
-- [ ] 포인트 적립/차감 로직 + 팀 랭킹 API
-- [ ] AI 안전 퀴즈 자동 생성 + 퀴즈 UI
-- [ ] 위험도 스코어링 엔진 (가중 점수 모델)
-- [ ] worker 앱: 랭킹 보드, 퀴즈, 내 공정 위험도
-- [ ] admin 앱: 위험 예측 대시보드 카드
+- [x] 포인트 적립/차감 로직 + 팀 랭킹 API
+- [x] AI 안전 퀴즈 자동 생성 (매일 1문제) + 답변 시 포인트
+- [x] 위험도 스코어링 엔진 (가중 점수: 사고빈도×30 + 미조치×25)
+- [x] 위험도 재계산 API
+- [ ] worker 앱: 랭킹 보드, 퀴즈 UI, 내 공정 위험도 (프론트 미구현)
+- [ ] admin 앱: 위험 예측 대시보드 카드 (프론트 미구현)
 
-### Phase 7: 통합 + 폴리싱 (1주)
+### Phase 7: 통합 + 폴리싱 (미착수)
 > 두 트랙 연동 + 마무리
 
+- [ ] worker PWA 앱 분리 (apps/worker/)
 - [ ] 데이터 순환 검증 (작업자 제보 → 관리자 대시보드 → 작업자 알림)
-- [ ] 전체 UI 폴리싱 + 에러 핸들링
-- [ ] Docker Compose (API + PostgreSQL + 두 프론트엔드)
-- [ ] 배포 설정 업데이트
+- [ ] 프론트 추가 페이지: 퀴즈 UI, 랭킹 보드, 위험 예측 카드
+- [ ] 전체 UI 폴리싱 + 에러 핸들링 + 로딩/빈 상태
+- [ ] Docker Compose 프로덕션 설정
+- [ ] 배포 (Cloudtype or Railway)
 
-**총 예상: 약 12.5주 (1인 기준)**
-**단축 전략: Phase 1-4 (관리자 MVP, 7.5주) 먼저 배포 → Phase 5-7 (작업자 트랙) 추가**
+**실제 소요: Phase 1-6 백엔드 + 핵심 프론트 완료**
+**남은 작업: Worker PWA 분리, 프론트 추가 페이지, UI 폴리싱, 프로덕션 배포**
 
 ---
 
 ## 8. 기술 스택 변경사항
 
-| 영역 | 현재 | 추가/변경 |
-|------|------|-----------|
+| 영역 | 변경 전 | 변경 후 (구현 완료) |
+|------|---------|---------------------|
 | 프로젝트 구조 | 단일 be/ + fe/ | **모노레포** (packages/api, apps/admin, apps/worker) |
-| DB | FAISS only | **+ PostgreSQL** (SQLAlchemy + Alembic) |
+| DB | FAISS only | **+ SQLAlchemy 2.0 + Alembic** (SQLite dev, PostgreSQL ready) |
 | Auth | 없음 | **+ JWT** (python-jose + bcrypt) + 3-role |
-| 법령 데이터 | FAISS 내장 | **법령 API 분리** (자주 변하는 법령을 독립 서비스로) |
-| 프론트 라우팅 | 없음 (단일 페이지) | **+ React Router v7** |
-| 상태관리 | useState only | **+ Zustand** (경량 상태관리) |
-| 차트 | 없음 | **+ Recharts** |
-| 음성 | 없음 | **+ OpenAI Whisper API** |
+| AI | OpenAI 직접 호출 | **AI Agent 아키텍처** (BaseAgent + 4개 전문 에이전트) |
+| 프론트 라우팅 | 없음 (단일 페이지) | **+ React Router v7** (10 routes) |
+| 상태관리 | useState only | **+ Zustand** (persist middleware) |
+| 차트 | 없음 | **+ Recharts** (Bar + Pie) |
+| 음성 | 없음 | **+ OpenAI Whisper API** (VoiceAgent) |
 | QR | 없음 | **+ qrcode** (Python) |
-| 파일업로드 | 없음 | **+ python-multipart** |
-| PDF 생성 | 없음 | **+ weasyprint** or **reportlab** |
-| 프론트 폼 | 없음 | **+ React Hook Form + Zod** |
-| 모바일 | 없음 | **PWA** (worker 앱, 모바일 최적화) |
+| 파일업로드 | 없음 | **+ python-multipart** (10MB, image/pdf) |
+| PDF 생성 | 없음 | **+ reportlab** (한글 폰트 자동 감지) |
+| 뉴스 | 없음 | **+ Google News RSS** + NewsAgent |
 
 ---
 
@@ -850,21 +854,27 @@ GET    /api/risk/my-zone                # 내 공정/구역 위험도
 ### 프로젝트 상세
 ```
 EHS 리스크 관리 SaaS 플랫폼 (듀얼 트랙)
+
+[AI Agent 아키텍처]
+- 4개 독립 AI Agent 설계 (뉴스분석/사고분석/법령검색/음성처리)
+- 분석 결과 DB 캐싱 (24시간 TTL)으로 API 비용 최적화
+
 [관리자 트랙]
-- 기업/사업장/역할 기반 다중 테넌트 구조 설계 및 구현
-- 사고/아차사고 등록-조치-추적 워크플로우 구축
-- RAG 기반 법령 근거 엔진 (FAISS + OpenAI) — 법령 API 분리 설계
-- GPT-4o 활용 반복 사고 패턴 분석 및 예방 조치 자동 생성
+- 기업/사업장/역할 기반 다중 테넌트 구조 (JWT 3-role 인증)
+- 사고/아차사고 CRUD + 상태 워크플로우 (접수→조치중→완료→재발관리)
+- AI 원인 분석 + 예방 체크리스트 + 관련 법령 근거 자동 생성
+- 대시보드: 사고 통계 차트 (Recharts) + 산업안전 뉴스 AI 분석
+- 월간 안전 리포트 PDF 자동 생성 (AI 요약 포함)
 - 가중 점수 모델 기반 사고 예측 스코어링 엔진
-- 조치 효과 피드백 루프 + 월간 안전 리포트 자동 생성
 
 [작업자 트랙]
-- Whisper API 기반 음성 현장 보고 → GPT 구조화 파싱
-- 신원 보호 설계 적용 익명 위험 제보 채널
-- GPT-4o 다국어 번역 + QR 스캔 기반 외국인 근로자 안전 안내
-- 팀 단위 안전 행동 게이미피케이션 (포인트/랭킹/AI 퀴즈)
+- Whisper API 음성 현장 보고 → GPT 구조화 파싱 → 사고 자동 등록
+- 신원 비저장 설계 익명 위험 제보 (AI 위험등급 분류, 토큰 기반 피드백)
+- GPT 다국어 번역 + QR 스캔 기반 외국인 근로자 안전 안내 (5개 언어)
+- 안전 행동 게이미피케이션 (포인트/랭킹/AI 퀴즈 자동 생성)
 
-Tech: FastAPI, React (모노레포), PostgreSQL, FAISS, OpenAI API (Whisper + GPT), PWA, Docker
+Tech: FastAPI, React, SQLAlchemy, FAISS, OpenAI API (GPT-4o-mini + Whisper),
+      Recharts, ReportLab, Docker
 ```
 
 ---

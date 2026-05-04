@@ -6,7 +6,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend,
 } from "recharts";
-import { Newspaper, Shield, ArrowRight, AlertTriangle, CheckCircle2, Clock, Eye } from "lucide-react";
+import { Newspaper, Shield, ArrowRight, AlertTriangle, CheckCircle2, Clock, Eye, FileDown } from "lucide-react";
 
 interface NewsItem {
   title: string;
@@ -74,9 +74,29 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-white">대시보드</h1>
-        <p className="text-slate-400 mt-1">{user?.name}님, 환영합니다.</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white">대시보드</h1>
+          <p className="text-slate-400 mt-1">{user?.name}님, 환영합니다.</p>
+        </div>
+        <button
+          onClick={async () => {
+            const res = await apiFetch("/api/reports/monthly");
+            if (res.ok) {
+              const blob = await res.blob();
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = `safety_report_${new Date().getFullYear()}_${String(new Date().getMonth()+1).padStart(2,"0")}.pdf`;
+              a.click();
+              URL.revokeObjectURL(url);
+            }
+          }}
+          className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-sm border border-slate-700 transition-colors"
+        >
+          <FileDown size={16} />
+          월간 리포트 PDF
+        </button>
       </div>
 
       {/* 통계 카드 */}

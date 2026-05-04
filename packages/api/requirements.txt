@@ -20,6 +20,9 @@ openai>=1.30
 faiss-cpu>=1.8
 numpy>=1.26
 
+# Report generation
+reportlab>=4.0
+
 # PDF processing (scripts)
 pdfplumber>=0.10
 pdfminer.six>=20221105

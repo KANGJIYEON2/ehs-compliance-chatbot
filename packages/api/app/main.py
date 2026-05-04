@@ -56,7 +56,7 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory=str(API_PACKAGE_ROOT)), name="static")
 
 # ── 라우터 등록 ──
-from app.routers import rag, auth, sites, master_data, incidents, attachments, news, ai_analysis, analytics  # noqa: E402
+from app.routers import rag, auth, sites, master_data, incidents, attachments, news, ai_analysis, analytics, reports  # noqa: E402
 
 app.include_router(rag.router)
 app.include_router(auth.router)
@@ -67,6 +67,7 @@ app.include_router(attachments.router)
 app.include_router(news.router)
 app.include_router(ai_analysis.router)
 app.include_router(analytics.router)
+app.include_router(reports.router)
 
 
 # ── 레거시 엔드포인트 (기존 FE ���환) ──

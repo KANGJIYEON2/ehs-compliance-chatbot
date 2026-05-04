@@ -68,6 +68,14 @@ CRUD            /api/sites/:id/processes
 CRUD            /api/sites/:id/equipment
 CRUD            /api/sites/:id/work-zones
 
+# Incidents
+GET/POST        /api/incidents           # List (filter/paging) / Create
+GET/PATCH/DEL   /api/incidents/:id       # Detail / Update / Delete
+POST/DEL        /api/incidents/:id/files # File upload / delete
+
+# Safety News (AI-analyzed)
+GET  /api/news                   # RSS news + GPT analysis (cached 30min)
+
 # RAG (law search engine)
 POST /api/rag/ask                # RAG query
 GET  /api/rag/health             # DB status
@@ -109,9 +117,23 @@ docker-compose up
 - `JWT_SECRET_KEY` — JWT signing secret
 - `VITE_API_URL` — Backend URL for frontend (default: http://localhost:8000)
 
+## AI Agents Architecture
+Each feature has an independent AI agent with a specific role:
+```
+packages/api/app/services/
+  ai_agents/
+    news_agent.py       — 뉴스 수집 → 사고유형 분류 → 예방 유의점 → 법령 근거
+    incident_agent.py   — 사고 등록 시 → 원인 분석 → 예방 체크리스트 자동 생성
+    law_agent.py        — RAG 검색 → 관련 법조문 매칭 → 요약 (기존 rag_service 래핑)
+    (planned) predict_agent.py — 사고 데이터 → 위험도 스코어링
+```
+All agents share the same OpenAI client but have specialized system prompts and output schemas.
+
 ## Development Direction
 See `docs/PRODUCT_PLAN.md` for full product plan.
 - **Phase 1 (done):** Monorepo + DB + Auth + Org structure
+- **Phase 2 (done):** Incident CRUD + file attachments
+- **Safety News (done):** RSS feed + GPT analysis on dashboard
 - **Phase 2:** Incident management CRUD
 - **Phase 3:** AI analysis + prevention checklists
 - **Phase 4:** Dashboard + reports

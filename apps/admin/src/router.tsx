@@ -10,6 +10,7 @@ import IncidentFormPage from "./pages/IncidentFormPage";
 import IncidentDetailPage from "./pages/IncidentDetailPage";
 import SafetyNewsPage from "./pages/SafetyNewsPage";
 import AnonymousReportsPage from "./pages/AnonymousReportsPage";
+import VoiceReportPage from "./pages/VoiceReportPage";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +33,7 @@ export const router = createBrowserRouter([
       { path: "incidents/:id", element: <IncidentDetailPage /> },
       { path: "news", element: <SafetyNewsPage /> },
       { path: "reports", element: <AnonymousReportsPage /> },
+      { path: "voice", element: <VoiceReportPage /> },
     ],
   },
 ]);

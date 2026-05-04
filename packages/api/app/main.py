@@ -11,12 +11,13 @@ import app.database as database
 from app.database import init_db, Base
 from app.models import *  # noqa: F401,F403 — register all models
 from app.services.rag_service import rag_service
-from app.services.ai_agents import NewsAgent, IncidentAgent, LawAgent
+from app.services.ai_agents import NewsAgent, IncidentAgent, LawAgent, VoiceAgent
 
 # AI Agent 싱글톤
 news_agent = NewsAgent()
 incident_agent = IncidentAgent()
 law_agent = LawAgent()
+voice_agent = VoiceAgent()
 from app.schemas.rag import AskRequest, AskResponse, ReloadRequest, HealthResponse
 
 
@@ -35,6 +36,7 @@ async def lifespan(app: FastAPI):
     news_agent.initialize(settings)
     incident_agent.initialize(settings)
     law_agent.initialize(settings)
+    voice_agent.initialize(settings)
     yield
 
 
@@ -56,7 +58,7 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory=str(API_PACKAGE_ROOT)), name="static")
 
 # ── 라우터 등록 ──
-from app.routers import rag, auth, sites, master_data, incidents, attachments, news, ai_analysis, analytics, reports, anonymous_reports  # noqa: E402
+from app.routers import rag, auth, sites, master_data, incidents, attachments, news, ai_analysis, analytics, reports, anonymous_reports, voice  # noqa: E402
 
 app.include_router(rag.router)
 app.include_router(auth.router)
@@ -69,6 +71,7 @@ app.include_router(ai_analysis.router)
 app.include_router(analytics.router)
 app.include_router(reports.router)
 app.include_router(anonymous_reports.router)
+app.include_router(voice.router)
 
 
 # ── 레거시 엔드포인트 (기존 FE ���환) ──

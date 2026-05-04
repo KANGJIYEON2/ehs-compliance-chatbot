@@ -7,12 +7,14 @@ import {
   AlertTriangle,
   Newspaper,
   MessageSquareWarning,
+  Mic,
   LogOut,
 } from "lucide-react";
 
 const navItems = [
   { to: "/", icon: LayoutDashboard, label: "대시보드" },
   { to: "/incidents", icon: AlertTriangle, label: "사고 관리" },
+  { to: "/voice", icon: Mic, label: "음성 보고" },
   { to: "/reports", icon: MessageSquareWarning, label: "익명 제보" },
   { to: "/news", icon: Newspaper, label: "안전 뉴스" },
   { to: "/chat", icon: Search, label: "법령 검색" },

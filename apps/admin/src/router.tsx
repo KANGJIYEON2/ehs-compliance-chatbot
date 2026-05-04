@@ -8,6 +8,7 @@ import SitesPage from "./pages/SitesPage";
 import IncidentListPage from "./pages/IncidentListPage";
 import IncidentFormPage from "./pages/IncidentFormPage";
 import IncidentDetailPage from "./pages/IncidentDetailPage";
+import SafetyNewsPage from "./pages/SafetyNewsPage";
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +29,7 @@ export const router = createBrowserRouter([
       { path: "incidents", element: <IncidentListPage /> },
       { path: "incidents/new", element: <IncidentFormPage /> },
       { path: "incidents/:id", element: <IncidentDetailPage /> },
+      { path: "news", element: <SafetyNewsPage /> },
     ],
   },
 ]);

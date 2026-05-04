@@ -11,6 +11,7 @@ import app.database as database
 from app.database import init_db, Base
 from app.models import *  # noqa: F401,F403 — register all models
 from app.services.rag_service import rag_service
+from app.services.news_service import news_service
 from app.schemas.rag import AskRequest, AskResponse, ReloadRequest, HealthResponse
 
 
@@ -25,6 +26,8 @@ async def lifespan(app: FastAPI):
         rag_service.initialize(settings)
     except Exception as e:
         print(f"[WARNING] RAG service init failed: {e}")
+    # 뉴스 서비스 초기화
+    news_service.initialize(settings)
     yield
 
 
@@ -46,7 +49,7 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory=str(API_PACKAGE_ROOT)), name="static")
 
 # ── 라우터 등록 ──
-from app.routers import rag, auth, sites, master_data, incidents, attachments  # noqa: E402
+from app.routers import rag, auth, sites, master_data, incidents, attachments, news  # noqa: E402
 
 app.include_router(rag.router)
 app.include_router(auth.router)
@@ -54,6 +57,7 @@ app.include_router(sites.router)
 app.include_router(master_data.router)
 app.include_router(incidents.router)
 app.include_router(attachments.router)
+app.include_router(news.router)
 
 
 # ── 레거시 엔드포인트 (기존 FE ���환) ──

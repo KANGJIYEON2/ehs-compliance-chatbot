@@ -7,3 +7,4 @@ from app.models.incident import Incident, IncidentAttachment, IncidentType, Seve
 from app.models.ai_analysis import AIAnalysisResult  # noqa: F401
 from app.models.anonymous_report import AnonymousReport  # noqa: F401
 from app.models.safety_guide import SafetyGuide, SafetyGuideTranslation, TrainingRecord  # noqa: F401
+from app.models.gamification import SafetyPoint, SafetyQuiz, QuizResponse, RiskScore  # noqa: F401

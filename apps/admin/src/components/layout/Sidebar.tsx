@@ -4,11 +4,13 @@ import {
   LayoutDashboard,
   Search,
   Building2,
+  AlertTriangle,
   LogOut,
 } from "lucide-react";
 
 const navItems = [
   { to: "/", icon: LayoutDashboard, label: "대시보드" },
+  { to: "/incidents", icon: AlertTriangle, label: "사고 관리" },
   { to: "/chat", icon: Search, label: "법령 검색" },
   { to: "/sites", icon: Building2, label: "사업장 관리" },
 ];

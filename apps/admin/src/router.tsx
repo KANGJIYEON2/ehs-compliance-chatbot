@@ -5,6 +5,9 @@ import SignupPage from "./pages/SignupPage";
 import DashboardPage from "./pages/DashboardPage";
 import RagChatPage from "./pages/RagChatPage";
 import SitesPage from "./pages/SitesPage";
+import IncidentListPage from "./pages/IncidentListPage";
+import IncidentFormPage from "./pages/IncidentFormPage";
+import IncidentDetailPage from "./pages/IncidentDetailPage";
 
 export const router = createBrowserRouter([
   {
@@ -22,6 +25,9 @@ export const router = createBrowserRouter([
       { index: true, element: <DashboardPage /> },
       { path: "chat", element: <RagChatPage /> },
       { path: "sites", element: <SitesPage /> },
+      { path: "incidents", element: <IncidentListPage /> },
+      { path: "incidents/new", element: <IncidentFormPage /> },
+      { path: "incidents/:id", element: <IncidentDetailPage /> },
     ],
   },
 ]);

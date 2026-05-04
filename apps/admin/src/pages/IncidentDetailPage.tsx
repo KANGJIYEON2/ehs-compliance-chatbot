@@ -86,7 +86,21 @@ export default function IncidentDetailPage() {
     setLoading(false);
   };
 
-  useEffect(() => { fetchIncident(); }, [id]);
+  // 저장된 AI 분석 결과 로드
+  const loadSavedResults = async () => {
+    const res = await apiFetch(`/api/ai/incidents/${id}/results`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.analysis) setAnalysis(data.analysis.data);
+      if (data.checklist) setChecklist(data.checklist.data || []);
+      if (data.legal_basis) setLegalBasis(data.legal_basis.data);
+    }
+  };
+
+  useEffect(() => {
+    fetchIncident();
+    loadSavedResults();
+  }, [id]);
 
   const changeStatus = async (newStatus: string) => {
     const res = await apiFetch(`/api/incidents/${id}`, {
@@ -134,6 +148,7 @@ export default function IncidentDetailPage() {
 
   const runChecklist = async () => {
     setChecklistLoading(true);
+    setCheckedItems(new Set());
     const res = await apiFetch(`/api/ai/incidents/${id}/checklist`, { method: "POST" });
     if (res.ok) {
       const data = await res.json();
@@ -145,14 +160,11 @@ export default function IncidentDetailPage() {
   const runLegalBasis = async () => {
     if (!incident) return;
     setLegalLoading(true);
-    const res = await apiFetch("/api/ai/legal-basis", {
-      method: "POST",
-      body: JSON.stringify({
-        incident_type: incident.incident_type,
-        description: incident.description,
-      }),
-    });
-    if (res.ok) setLegalBasis(await res.json());
+    const res = await apiFetch(`/api/ai/incidents/${id}/legal`, { method: "POST" });
+    if (res.ok) {
+      const data = await res.json();
+      setLegalBasis(data.legal_basis || data);
+    }
     setLegalLoading(false);
   };
 

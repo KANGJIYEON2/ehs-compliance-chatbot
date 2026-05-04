@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  api:
+    build: ./packages/api
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./packages/api/.env
+    environment:
+      - PORT=8000
+    volumes:
+      - ./packages/api/vector_db_law:/app/vector_db_law
+      - ./packages/api/vector_db_rule:/app/vector_db_rule
+      - ./packages/api/extracted_rule:/app/extracted_rule
+
+  admin:
+    build: ./apps/admin
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+volumes:
+  pgdata:

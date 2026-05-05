@@ -11,29 +11,31 @@ import IncidentDetailPage from "./pages/IncidentDetailPage";
 import SafetyNewsPage from "./pages/SafetyNewsPage";
 import AnonymousReportsPage from "./pages/AnonymousReportsPage";
 import VoiceReportPage from "./pages/VoiceReportPage";
+import QuizPage from "./pages/QuizPage";
+import RankingPage from "./pages/RankingPage";
+import RiskScoresPage from "./pages/RiskScoresPage";
+import SafetyGuidePage from "./pages/SafetyGuidePage";
 
 export const router = createBrowserRouter([
-  {
-    path: "/login",
-    element: <LoginPage />,
-  },
-  {
-    path: "/signup",
-    element: <SignupPage />,
-  },
+  { path: "/login", element: <LoginPage /> },
+  { path: "/signup", element: <SignupPage /> },
   {
     path: "/",
     element: <AppLayout />,
     children: [
       { index: true, element: <DashboardPage /> },
-      { path: "chat", element: <RagChatPage /> },
-      { path: "sites", element: <SitesPage /> },
       { path: "incidents", element: <IncidentListPage /> },
       { path: "incidents/new", element: <IncidentFormPage /> },
       { path: "incidents/:id", element: <IncidentDetailPage /> },
-      { path: "news", element: <SafetyNewsPage /> },
-      { path: "reports", element: <AnonymousReportsPage /> },
       { path: "voice", element: <VoiceReportPage /> },
+      { path: "reports", element: <AnonymousReportsPage /> },
+      { path: "news", element: <SafetyNewsPage /> },
+      { path: "quiz", element: <QuizPage /> },
+      { path: "ranking", element: <RankingPage /> },
+      { path: "risk", element: <RiskScoresPage /> },
+      { path: "safety-guide", element: <SafetyGuidePage /> },
+      { path: "chat", element: <RagChatPage /> },
+      { path: "sites", element: <SitesPage /> },
     ],
   },
 ]);

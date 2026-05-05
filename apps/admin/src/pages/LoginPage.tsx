@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, Navigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 import { API_BASE } from "../lib/api";
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const setAuth = useAuthStore((s) => s.setAuth);
+  const accessToken = useAuthStore((s) => s.accessToken);
+
+  if (accessToken) return <Navigate to="/" replace />;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

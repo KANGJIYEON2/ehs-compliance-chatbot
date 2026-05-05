@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, Navigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 import { API_BASE } from "../lib/api";
 
 export default function SignupPage() {
   const navigate = useNavigate();
   const setAuth = useAuthStore((s) => s.setAuth);
+  const accessToken = useAuthStore((s) => s.accessToken);
+
+  if (accessToken) return <Navigate to="/" replace />;
   const [form, setForm] = useState({
     company_name: "",
     business_number: "",

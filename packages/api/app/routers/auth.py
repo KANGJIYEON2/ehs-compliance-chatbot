@@ -110,10 +110,13 @@ def me(user: User = Depends(get_current_user)):
 def create_user(
     req: CreateUserRequest,
     db: Session = Depends(get_db),
-    admin: User = Depends(require_role(UserRole.admin)),
+    admin: User = Depends(require_role(UserRole.superadmin, UserRole.admin)),
 ):
-    if req.role not in (UserRole.field_manager.value, UserRole.worker.value):
-        raise HTTPException(status_code=400, detail="role은 field_manager 또는 worker만 가능합니다")
+    allowed_roles = [UserRole.field_manager.value, UserRole.worker.value]
+    if admin.role == UserRole.superadmin.value:
+        allowed_roles.append(UserRole.admin.value)
+    if req.role not in allowed_roles:
+        raise HTTPException(status_code=400, detail=f"허용된 role: {', '.join(allowed_roles)}")
 
     if db.query(User).filter(User.email == req.email).first():
         raise HTTPException(status_code=400, detail="이미 등록된 이메일입니다")

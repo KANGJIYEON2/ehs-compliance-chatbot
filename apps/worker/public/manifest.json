@@ -1,0 +1,16 @@
+{
+  "name": "SafetyAI Worker",
+  "short_name": "SafetyAI",
+  "description": "산업안전 현장 작업자 도구",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#10b981",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

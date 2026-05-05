@@ -57,7 +57,7 @@
 | 항목 | 목표 |
 |------|------|
 | 제품 형태 | **기업형 EHS 리스크 관리 플랫폼 (듀얼 트랙)** |
-| 인증 | 기업 회원가입 + 역할 기반 권한 (관리자 / 현장담당자 / 작업자) |
+| 인증 | 기업 회원가입 + 4-role 권한 (superadmin / admin / field_manager / worker) |
 | DB | PostgreSQL (사고/제보/사용자/게임) + FAISS (법령 RAG) |
 | 사용자 구조 | 기업 → 사업장 → 부서/공정 |
 | 데이터 | 법령 + **실시간 사고/제보 데이터** + 조치 이력 + 행동 포인트 |
@@ -822,8 +822,49 @@ GET    /api/risk/my-zone                # 내 공정/구역 위험도
 - [ ] Docker Compose 프로덕션 설정
 - [ ] 배포 (Cloudtype or Railway)
 
-**실제 소요: Phase 1-6 백엔드 + 핵심 프론트 완료**
-**남은 작업: Worker PWA 분리, 프론트 추가 페이지, UI 폴리싱, 프로덕션 배포**
+### Phase 8: SuperAdmin + 앱 분리 ✅ (진행중)
+> 4-role 권한 체계 + Worker PWA 독립
+
+**4-Role 권한 구조:**
+```
+superadmin — 플랫폼 전체 관리
+  ├── 전체 기업 목록/상세 조회
+  ├── 기업별 사용량/사고 현황 모니터링
+  ├── 시스템 설정 (AI, 법령 DB, 뉴스 소스)
+  ├── admin 계정 생성 가능
+  └── 플랫폼 통계 대시보드
+
+admin — 개별 기업 관리
+  ├── 사업장/사용자/사고/리포트 전체 관리
+  ├── field_manager, worker 계정 생성
+  └── 기업 내 모든 데이터 접근
+
+field_manager — 현장 담당자
+  ├── 배정된 사업장만 접근
+  ├── 사고 등록/관리, 제보 관리
+  └── 마스터 데이터 조회
+
+worker — 현장 작업자
+  ├── Worker PWA 앱 사용
+  ├── 음성 보고, 익명 제보, 퀴즈
+  └── QR 안전수칙, 랭킹 확인
+```
+
+**3개 앱 분리:**
+```
+apps/admin/    → 관리자 웹 (데스크톱) — 대시보드, 사고관리, AI분석, 리포트
+apps/worker/   → 작업자 PWA (모바일) — 음성보고, 제보, 퀴즈, 랭킹, QR
+apps/superadmin/ (planned) → 플랫폼 관리 콘솔
+```
+
+- [x] superadmin 역할 추가 (UserRole enum)
+- [x] SuperAdmin API: 전체 기업 목록, 플랫폼 통계, 기업 상세
+- [x] superadmin이 admin 계정 생성 가능
+- [ ] Worker PWA 앱 분리 (apps/worker/)
+- [ ] SuperAdmin 프론트 (planned)
+
+**실제 소요: Phase 1-8 백엔드 완료 + Admin 프론트 완료**
+**남은 작업: Worker PWA 분리, SuperAdmin 프론트, 프로덕션 배포**
 
 ---
 
@@ -833,7 +874,7 @@ GET    /api/risk/my-zone                # 내 공정/구역 위험도
 |------|---------|---------------------|
 | 프로젝트 구조 | 단일 be/ + fe/ | **모노레포** (packages/api, apps/admin, apps/worker) |
 | DB | FAISS only | **+ SQLAlchemy 2.0 + Alembic** (SQLite dev, PostgreSQL ready) |
-| Auth | 없음 | **+ JWT** (python-jose + bcrypt) + 3-role |
+| Auth | 없음 | **+ JWT** (python-jose + bcrypt) + 4-role (superadmin/admin/field_mgr/worker) |
 | AI | OpenAI 직접 호출 | **AI Agent 아키텍처** (BaseAgent + 4개 전문 에이전트) |
 | 프론트 라우팅 | 없음 (단일 페이지) | **+ React Router v7** (10 routes) |
 | 상태관리 | useState only | **+ Zustand** (persist middleware) |

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import ChatMessage from "../components/ChatMessage";
-import ChatInput from "../components/ChatInput";
-import TypingDots from "../components/TypingDots";
+import ChatMessage from "./ChatMessage";
+import ChatInput from "./ChatInput";
+import TypingDots from "./TypingDots";
 import EvidenceToggle, { type Hit } from "./EvidenceToggle";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Scale, Settings2 } from "lucide-react";
 
 const API_BASE =
   (import.meta as any)?.env?.VITE_API_URL ?? "http://127.0.0.1:8000";
@@ -17,7 +17,7 @@ type AskResponse = {
 };
 
 const GREETING =
-  "안녕하세요 👨🏻‍💼 김안전 비서입니다.\nEHS 규제 관련 어떤 도움을 드릴까요?";
+  "안녕하세요. SafetyAI 법령 검색 엔진입니다.\n산업안전보건법, 중대재해처벌법 등 EHS 규제에 대해 질문하세요.";
 
 type Msg = { sender: "user" | "bot"; text: string; hits?: Hit[] };
 
@@ -26,8 +26,8 @@ export default function ChatWindow() {
     { sender: "bot", text: GREETING },
   ]);
   const [loading, setLoading] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
-  // 컨트롤
   const [mode, setMode] = useState<"auto" | "law" | "rule">("auto");
   const [useLaw, setUseLaw] = useState(true);
   const [useRule, setUseRule] = useState(true);
@@ -49,7 +49,6 @@ export default function ChatWindow() {
 
   const handleSend = async (text: string) => {
     if (!text.trim() || loading) return;
-
     setMessages((prev) => [...prev, { sender: "user", text }]);
     setLoading(true);
 
@@ -70,128 +69,81 @@ export default function ChatWindow() {
         }),
       });
 
-      if (!res.ok) {
-        const msg = await res.text();
-        throw new Error(msg || `HTTP ${res.status}`);
-      }
-
+      if (!res.ok) throw new Error(await res.text());
       const data: AskResponse = await res.json();
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          sender: "bot",
-          text: data.answer,
-          hits: data.hits ?? [],
-        },
-      ]);
+      setMessages((prev) => [...prev, { sender: "bot", text: data.answer, hits: data.hits ?? [] }]);
     } catch (err: any) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          sender: "bot",
-          text:
-            "요청 처리 중 오류가 발생했어요 ⚠️\n" +
-            (err?.message || "알 수 없는 오류"),
-        },
-      ]);
+      setMessages((prev) => [...prev, { sender: "bot", text: `오류가 발생했습니다: ${err?.message || "알 수 없는 오류"}` }]);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col w-full max-w-5xl h-[80vh] bg-white shadow-xl rounded-2xl overflow-hidden border border-slate-200">
-      {/* 상단 툴바 */}
-      <div className="flex items-center justify-between px-4 py-3 border-b bg-white">
-        <div className="flex items-center gap-3 text-xs text-slate-600">
-          <div className="flex items-center gap-2">
-            <span className="text-slate-500">모드</span>
-            <select
-              value={mode}
-              onChange={(e) => setMode(e.target.value as any)}
-              className="px-2 py-1 border rounded-md text-sm"
-            >
-              <option value="auto">자동</option>
-              <option value="law">법률 우선</option>
-              <option value="rule">규칙/별표 우선</option>
-            </select>
+    <div className="flex flex-col h-full bg-slate-950 rounded-xl overflow-hidden border border-slate-800">
+      {/* 헤더 */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-900">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 bg-amber-500/20 rounded-lg flex items-center justify-center">
+            <Scale size={14} className="text-amber-400" />
           </div>
-
-          <div className="flex items-center gap-2">
-            <label className="flex items-center gap-1">
-              <input
-                type="checkbox"
-                checked={useLaw}
-                onChange={(e) => setUseLaw(e.target.checked)}
-              />
-              <span>법률DB</span>
-            </label>
-            <label className="flex items-center gap-1">
-              <input
-                type="checkbox"
-                checked={useRule}
-                onChange={(e) => setUseRule(e.target.checked)}
-              />
-              <span>규칙DB</span>
-            </label>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span>TopK</span>
-            <input
-              type="number"
-              min={1}
-              max={20}
-              value={topk}
-              onChange={(e) =>
-                setTopk(Math.min(20, Math.max(1, Number(e.target.value))))
-              }
-              className="w-16 px-2 py-1 border rounded-md text-sm"
-            />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span>컨텍스트</span>
-            <input
-              type="number"
-              min={1000}
-              max={20000}
-              step={500}
-              value={ctxChars}
-              onChange={(e) =>
-                setCtxChars(
-                  Math.min(20000, Math.max(1000, Number(e.target.value)))
-                )
-              }
-              className="w-24 px-2 py-1 border rounded-md text-sm"
-            />
+          <div>
+            <p className="text-sm font-medium text-white leading-none">법령 검색 엔진</p>
+            <p className="text-[10px] text-slate-500 mt-0.5">산안법 · 중대재해처벌법 · 규칙/별표</p>
           </div>
         </div>
-
-        <button
-          onClick={handleReset}
-          className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm bg-slate-800 text-white hover:bg-slate-700 transition shadow"
-          title="대화 모두 지우기"
-        >
-          <RotateCcw size={16} /> Reset
-        </button>
+        <div className="flex items-center gap-1.5">
+          <button onClick={() => setShowSettings(!showSettings)}
+            className="p-1.5 text-slate-500 hover:text-white transition-colors rounded-lg hover:bg-slate-800" title="설정">
+            <Settings2 size={15} />
+          </button>
+          <button onClick={handleReset}
+            className="p-1.5 text-slate-500 hover:text-white transition-colors rounded-lg hover:bg-slate-800" title="초기화">
+            <RotateCcw size={15} />
+          </button>
+        </div>
       </div>
 
-      {/* 안내 배너 */}
-      <div className="px-4 py-2 bg-amber-50 text-amber-800 text-xs border-b border-amber-200">
-        ⚠️ 안내: 본 답변은 생성형 AI가 제공하는 <b>참고 정보</b>입니다. 실제
-        준수·해석은
-        <b> 최신 법령·고시 원문</b>과 관할기관 안내를 반드시 확인해 주세요.
+      {/* 설정 패널 (접이식) */}
+      {showSettings && (
+        <div className="px-4 py-2.5 bg-slate-900/80 border-b border-slate-800 flex items-center gap-4 text-[11px] text-slate-400 flex-wrap">
+          <div className="flex items-center gap-1.5">
+            <span>모드</span>
+            <select value={mode} onChange={(e) => setMode(e.target.value as any)}
+              className="px-2 py-0.5 bg-slate-800 text-white rounded border border-slate-700 text-[11px]">
+              <option value="auto">자동</option>
+              <option value="law">법률 우선</option>
+              <option value="rule">규칙/별표</option>
+            </select>
+          </div>
+          <label className="flex items-center gap-1">
+            <input type="checkbox" checked={useLaw} onChange={(e) => setUseLaw(e.target.checked)} className="w-3 h-3" />법률
+          </label>
+          <label className="flex items-center gap-1">
+            <input type="checkbox" checked={useRule} onChange={(e) => setUseRule(e.target.checked)} className="w-3 h-3" />규칙
+          </label>
+          <div className="flex items-center gap-1.5">
+            <span>TopK</span>
+            <input type="number" min={1} max={20} value={topk}
+              onChange={(e) => setTopk(Math.min(20, Math.max(1, +e.target.value)))}
+              className="w-12 px-1.5 py-0.5 bg-slate-800 text-white rounded border border-slate-700 text-[11px]" />
+          </div>
+        </div>
+      )}
+
+      {/* 안내 */}
+      <div className="px-4 py-1.5 bg-amber-500/5 border-b border-amber-500/10">
+        <p className="text-[10px] text-amber-400/70">
+          AI 생성 답변은 참고 정보입니다. 실제 준수는 최신 법령 원문을 확인하세요.
+        </p>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 p-6 space-y-5 overflow-y-auto bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200">
+      <div className="flex-1 p-4 space-y-4 overflow-y-auto">
         {messages.map((msg, i) => (
           <ChatMessage key={i} sender={msg.sender} text={msg.text}>
-            {/* 근거자료: 기본 접힘(토글 컴포넌트) */}
             {msg.sender === "bot" && msg.hits && msg.hits.length > 0 && (
-              <div className="ml-12 mt-1">
+              <div className="mt-2">
                 <EvidenceToggle hits={msg.hits} />
               </div>
             )}

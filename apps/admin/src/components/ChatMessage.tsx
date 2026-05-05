@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Scale } from "lucide-react";
 
 type Props = {
   sender: "user" | "bot";
@@ -11,33 +12,28 @@ export default function ChatMessage({ sender, text, children }: Props) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25 }}
-      className={`flex flex-col gap-2 ${isUser ? "items-end" : "items-start"}`}
+      transition={{ duration: 0.2 }}
+      className={`flex flex-col ${isUser ? "items-end" : "items-start"}`}
     >
-      <div
-        className={`flex items-end gap-3 ${
-          isUser ? "justify-end" : "justify-start"
-        }`}
-      >
+      <div className={`flex items-end gap-2 ${isUser ? "justify-end" : "justify-start"} max-w-[85%]`}>
         {!isUser && (
-          <div className="w-9 h-9 rounded-full bg-slate-800 text-white flex items-center justify-center text-sm shadow">
-            🤖
+          <div className="w-7 h-7 rounded-lg bg-amber-500/15 flex items-center justify-center shrink-0">
+            <Scale size={13} className="text-amber-400" />
           </div>
         )}
         <div
-          className={`px-5 py-3 max-w-[65%] rounded-2xl text-sm leading-relaxed shadow whitespace-pre-wrap ${
+          className={`px-4 py-2.5 rounded-2xl text-[13px] leading-relaxed whitespace-pre-wrap ${
             isUser
-              ? "bg-emerald-500 text-white rounded-br-none"
-              : "bg-slate-800 text-white rounded-bl-none"
+              ? "bg-emerald-600 text-white rounded-br-sm"
+              : "bg-slate-800 text-slate-200 border border-slate-700/50 rounded-bl-sm"
           }`}
         >
           {text}
         </div>
       </div>
 
-      {/* 버블 하단 확장 블록(근거 카드 등) */}
       {children}
     </motion.div>
   );

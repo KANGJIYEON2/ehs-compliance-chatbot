@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link, Navigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 import { API_BASE } from "../lib/api";
+import { Shield, ArrowRight, Loader2 } from "lucide-react";
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -9,26 +10,20 @@ export default function SignupPage() {
   const accessToken = useAuthStore((s) => s.accessToken);
 
   if (accessToken) return <Navigate to="/" replace />;
+
   const [form, setForm] = useState({
-    company_name: "",
-    business_number: "",
-    email: "",
-    password: "",
-    name: "",
+    company_name: "", business_number: "", email: "", password: "", name: "",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const update = (key: string, value: string) =>
-    setForm((prev) => ({ ...prev, [key]: value }));
+  const update = (k: string, v: string) => setForm((p) => ({ ...p, [k]: v }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
-
     try {
-      // 1. Register
       const registerRes = await fetch(`${API_BASE}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -39,15 +34,11 @@ export default function SignupPage() {
         throw new Error(data.detail || "회원가입 실패");
       }
       const tokens = await registerRes.json();
-
-      // 2. Get user info
       const meRes = await fetch(`${API_BASE}/api/auth/me`, {
         headers: { Authorization: `Bearer ${tokens.access_token}` },
       });
       if (!meRes.ok) throw new Error("사용자 정보 조회 실패");
-      const user = await meRes.json();
-
-      setAuth(tokens, user);
+      setAuth(tokens, await meRes.json());
       navigate("/");
     } catch (err: any) {
       setError(err.message);
@@ -56,90 +47,60 @@ export default function SignupPage() {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-      <div className="bg-slate-800 rounded-2xl shadow-xl p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-white text-center mb-2">
-          EHS 리스크 관리
-        </h1>
-        <p className="text-slate-400 text-center mb-8">기업 회원가입</p>
+  const fields = [
+    { key: "company_name", label: "기업명", required: true, placeholder: "주식회사 OO" },
+    { key: "business_number", label: "사업자등록번호", required: false, placeholder: "000-00-00000" },
+    { key: "name", label: "담당자 이름", required: true, placeholder: "홍길동" },
+    { key: "email", label: "이메일", required: true, placeholder: "admin@company.kr", type: "email" },
+    { key: "password", label: "비밀번호", required: true, placeholder: "6자 이상", type: "password" },
+  ];
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm text-slate-300 mb-1">
-              기업명 *
-            </label>
-            <input
-              value={form.company_name}
-              onChange={(e) => update("company_name", e.target.value)}
-              className="w-full px-4 py-2 bg-slate-700 text-white rounded-lg border border-slate-600 focus:border-emerald-500 focus:outline-none"
-              required
-            />
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 flex items-center justify-center p-6">
+      <div className="w-full max-w-md">
+        <div className="flex items-center gap-3 mb-8 justify-center">
+          <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center">
+            <Shield size={22} className="text-white" />
           </div>
-          <div>
-            <label className="block text-sm text-slate-300 mb-1">
-              사업자등록번호
-            </label>
-            <input
-              value={form.business_number}
-              onChange={(e) => update("business_number", e.target.value)}
-              placeholder="000-00-00000"
-              className="w-full px-4 py-2 bg-slate-700 text-white rounded-lg border border-slate-600 focus:border-emerald-500 focus:outline-none"
-            />
-          </div>
-          <div>
-            <label className="block text-sm text-slate-300 mb-1">
-              담당자 이름 *
-            </label>
-            <input
-              value={form.name}
-              onChange={(e) => update("name", e.target.value)}
-              className="w-full px-4 py-2 bg-slate-700 text-white rounded-lg border border-slate-600 focus:border-emerald-500 focus:outline-none"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm text-slate-300 mb-1">
-              이메일 *
-            </label>
-            <input
-              type="email"
-              value={form.email}
-              onChange={(e) => update("email", e.target.value)}
-              className="w-full px-4 py-2 bg-slate-700 text-white rounded-lg border border-slate-600 focus:border-emerald-500 focus:outline-none"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm text-slate-300 mb-1">
-              비밀번호 *
-            </label>
-            <input
-              type="password"
-              value={form.password}
-              onChange={(e) => update("password", e.target.value)}
-              className="w-full px-4 py-2 bg-slate-700 text-white rounded-lg border border-slate-600 focus:border-emerald-500 focus:outline-none"
-              required
-              minLength={6}
-            />
-          </div>
+          <span className="text-xl font-bold text-white">SafetyAI</span>
+        </div>
+
+        <h2 className="text-2xl font-bold text-white mb-1 text-center">기업 회원가입</h2>
+        <p className="text-slate-400 text-sm mb-8 text-center">기업 정보를 등록하고 안전 관리를 시작하세요.</p>
+
+        <form onSubmit={handleSubmit} className="space-y-3.5">
+          {fields.map(({ key, label, required, placeholder, type }) => (
+            <div key={key}>
+              <label className="block text-sm font-medium text-slate-300 mb-1">
+                {label} {required && <span className="text-emerald-400">*</span>}
+              </label>
+              <input
+                type={type || "text"}
+                value={(form as any)[key]}
+                onChange={(e) => update(key, e.target.value)}
+                className="w-full px-4 py-2.5 bg-slate-800/50 text-white rounded-xl border border-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 focus:outline-none transition-all placeholder-slate-500"
+                placeholder={placeholder}
+                required={required}
+                minLength={key === "password" ? 6 : undefined}
+              />
+            </div>
+          ))}
 
           {error && (
-            <p className="text-red-400 text-sm text-center">{error}</p>
+            <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-2.5">
+              <p className="text-red-400 text-sm">{error}</p>
+            </div>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium disabled:opacity-50 transition-colors"
-          >
-            {loading ? "가입 중..." : "회원가입"}
+          <button type="submit" disabled={loading}
+            className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-medium disabled:opacity-50 transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 mt-2">
+            {loading ? <Loader2 size={18} className="animate-spin" /> : <>회원가입 <ArrowRight size={16} /></>}
           </button>
         </form>
 
-        <p className="text-slate-400 text-sm text-center mt-6">
+        <p className="text-slate-500 text-sm text-center mt-8">
           이미 계정이 있으신가요?{" "}
-          <Link to="/login" className="text-emerald-400 hover:underline">
+          <Link to="/login" className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors">
             로그인
           </Link>
         </p>

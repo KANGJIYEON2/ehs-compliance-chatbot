@@ -1,310 +1,184 @@
-# EHS Compliance Chatbot (KOR) 김안전 비서 🧑‍💼
+# SafetyAI — EHS 리스크 관리 플랫폼
 
-**법령/규칙 통합 RAG + 별표(OCR/표/그림) 근거 프리뷰 + 깔끔한 프론트(UI)**
+> 기업별 산업안전 사고 데이터를 기반으로 반복 위험 유형을 분석하고, AI 예방 조치·법령 근거·월간 리포트를 자동 생성하는 기업형 EHS 관리 플랫폼
 
-> “현장에서 바로 쓰는 EHS 규제 Q\&A.”
-> 법·시행령·규칙·별표(표/그림/OCR)를 한 번에 검색하고, **정확한 근거**를 **이미지/표**로 까지 보여줍니다.
+## 핵심 기능
 
----
+### 관리자 트랙 (Admin Web)
+| 기능 | 설명 |
+|------|------|
+| **사고/아차사고 관리** | 9개 유형, 4단계 심각도, 상태 워크플로우 (접수→조치중→완료→재발관리) |
+| **AI 원인 분석** | GPT-4o 기반 근본 원인, 기여 요인, 예방 체크리스트 자동 생성 |
+| **법령 근거 검색** | RAG(FAISS) + 국가법령정보센터 API 연동, 관련 법조문·사업주 의무·처벌 요약 |
+| **대시보드** | 사고 통계 차트 (Recharts), KPI 카드, 산업안전 뉴스 AI 분석 |
+| **월간 리포트** | PDF 자동 생성 (유형별/심각도별/상태별 집계 + AI 요약) |
+| **익명 제보 관리** | AI 위험등급 분류, 조치 입력 → 제보자에게 피드백 |
+| **위험 예측** | 가중 점수 모델 기반 공정별 위험도 스코어링 |
 
-## ✨ 하이라이트
-
-- **통합 RAG**: 법률·시행령·시행규칙·별표까지 멀티 DB 검색 → 상위 근거 컨텍스트로 LLM 답변
-- **별표 프리뷰**: PDF에서 **별표 페이지 이미지** 추출(+OCR 텍스트), **표는 Markdown**으로 미리보기
-- **정확성 퍼스트 프롬프트**: “제공 컨텍스트만 사용, 부족하면 부족하다고 명시”
-- **근거 토글 UI**: 답변은 깔끔하게, 필요할 때 근거 패널을 열어 이미지/표 확인
-- **간편 배포**: Dockerfile 포함. 로컬/Cloudtype/Heroku(컨테이너) 배포 OK
-- **윈도우 친화**: Poppler/Tesseract 설치 가이드 & 트러블슈팅 포함
-
----
-
-## 🧱 아키텍처 개요
-
-```
-[User]
-  │
-  ▼
-Frontend (Vite + React + Tailwind + Framer Motion)
-  │  └─ /ask 호출 (mode, dbs, topK, ctxChars 등 컨트롤)
-  ▼
-FastAPI (Python)
-  ├─ /ask        : 벡터검색 → 컨텍스트 구성 → LLM 호출 → 답변/근거/이미지URL 반환
-  ├─ /health     : DB 로드 상태
-  ├─ /reload-db  : 런타임 DB 핫리로드
-  └─ /static     : extracted_rule/images/*.png 정적 서빙
-      ▲
-      │  (PDF 추출 산출물)
-  Scripts
-  └─ extract_rules_pdf.py : pdfplumber + pdf2image + pytesseract (+ camelot)로
-                            별표 텍스트/표/OCR/이미지 추출
-      └─ rules_extracted.json, images/*.png, tables/*.md
-  │
-  ▼
-FAISS Vector DB (법령/규칙/별표)
-  └─ text-embedding-3-small(1536-d)
-```
+### 작업자 트랙 (Worker PWA)
+| 기능 | 설명 |
+|------|------|
+| **음성 보고** | Whisper STT → GPT 구조화 파싱 → 사고 자동 등록 |
+| **익명 제보** | 신원 비저장, AI 위험등급 분류, 토큰 기반 결과 확인 |
+| **안전 퀴즈** | AI가 매일 새 문제 생성, 정답 시 포인트 적립 |
+| **안전 랭킹** | 팀 단위 포인트 경쟁, 게이미피케이션 |
+| **다국어 안전 안내** | QR 스캔 → 5개 언어 번역 (베트남/캄보디아/네팔/미얀마/영어) |
 
 ---
 
-## 📁 폴더 구조
+## 기술 스택
+
+| 영역 | 기술 |
+|------|------|
+| **Backend** | FastAPI · SQLAlchemy 2.0 · Alembic · JWT (4-role) |
+| **AI** | OpenAI GPT-4o-mini · Whisper · FAISS RAG · 4개 AI Agent |
+| **Frontend** | React 19 · TypeScript · Vite 7 · TailwindCSS 4 · Recharts · Zustand |
+| **Database** | SQLite (dev) / PostgreSQL (prod) · 18 tables |
+| **Infra** | Docker · docker-compose · PWA |
+
+---
+
+## AI Agent 아키텍처
 
 ```
-ehs-compliance-chatbot/
-├─ be/                      # Backend (FastAPI)
-│  ├─ main.py               # API (health/ask/reload-db/static)
-│  ├─ requirements.txt
-│  ├─ Dockerfile
-│  └─ scripts/
-│     ├─ extract_rules_pdf.py   # 규칙 PDF → 별표 이미지/OCR/표/텍스트
-│     ├─ build_vector_db.py     # laws_meta.json → FAISS 인덱스
-│     └─ qa.py                  # CLI 미니 QA
-├─ vector_db_law/           # (예) 법령 인덱스 (laws.index, laws_meta.json)
-├─ vector_db_rule/          # (예) 규칙/별표 인덱스
-└─ extracted_rule/          # PDF 추출 산출물
-   ├─ rules_extracted.json
-   ├─ images/별표XX_p{page}.png
-   └─ tables/별표XX_t{idx}.md
+┌─────────────────────────────────────────┐
+│           AI Agent Layer                 │
+├──────────┬──────────┬──────────┬────────┤
+│ NewsAgent│IncidentAg│ LawAgent │VoiceAg │
+│          │          │          │        │
+│ RSS 수집 │ 원인분석 │ 법령검색 │ STT    │
+│ 유형분류 │ 체크리스트│ 의무요약 │ 파싱   │
+│ 예방유의 │ 재발방지 │ 처벌안내 │ 구조화 │
+└──────────┴──────────┴──────────┴────────┘
+         ↑ BaseAgent (공유 OpenAI Client)
 ```
 
 ---
 
-## ⚙️ 요구 사항
+## 프로젝트 구조
 
-### Backend
+```
+packages/api/          FastAPI 백엔드 (40+ API endpoints)
+  app/
+    models/            18개 DB 테이블
+    routers/           15개 라우터
+    services/          RAG, Report, LawAPI, AI Agents
+  migrations/          Alembic (7 migrations)
+  vector_db_law/       법률 벡터DB (784 entries)
+  vector_db_rule/      규칙 벡터DB (13,802 entries)
 
-- Python 3.11+
-- FastAPI, Uvicorn, FAISS, OpenAI SDK(>=1.x), python-dotenv
-- pdfplumber, pdf2image, pytesseract, pdfminer.six (표 추출은 camelot-py\[cv] 선택)
-- OS 의존 도구
+apps/admin/            관리자 웹앱 (React, port 3000)
+  src/pages/           15개 페이지
+  src/components/      레이아웃, 챗봇, 공통 컴포넌트
 
-  - **Poppler** (pdf2image용)
-  - **Tesseract OCR** (OCR용, `kor`/`eng` 데이터)
-
-### Frontend
-
-- Vite + React
-- TailwindCSS
-- framer-motion, lucide-react
-
----
-
-## 🔑 환경 변수 (.env)
-
-`be/.env` (레포에는 절대 커밋하지 마세요)
-
-```env
-OPENAI_API_KEY=sk-...
-EHS_DB_DIRS=vector_db_law,vector_db_rule
-OPENAI_TIMEOUT=90
+apps/worker/           작업자 PWA (React, port 3001)
+  src/pages/           5개 모바일 페이지
 ```
 
-> **보안 팁**
-> 커밋 전에 비밀키 유출 검사:
->
-> ```bash
-> git grep -nI -E "OPENAI_API_KEY|sk-[A-Za-z0-9_-]{20,}" -- .
-> ```
-
 ---
 
-## 🧪 데이터 파이프라인 (규칙 PDF → 별표 이미지/OCR/표/텍스트)
+## 실행 방법
 
-1. **규칙 PDF 추출**
+### 1. 환경 변수 설정
 
 ```bash
-# Windows 예시 (Poppler 경로 맞게 수정)
-py be/scripts/extract_rules_pdf.py ^
-  -i data\rules\산업안전보건기준에_관한_규칙.pdf ^
-  -o extracted_rule ^
-  --ocr ^
-  --poppler-path "C:\Program Files\poppler-25.07.0\Library\bin" ^
-  --dpi 300 ^
-  --lang "kor+eng"
+cp packages/api/.env.example packages/api/.env
+# .env 수정:
+#   OPENAI_API_KEY=sk-...
+#   LAW_API_KEY=공공데이터포털_인증키
+#   JWT_SECRET_KEY=랜덤시크릿
 ```
 
-생성물:
-
-- `extracted_rule/rules_extracted.json`
-  `type` ∈ {`annex_text`, `annex_ocr`, `table`, `rules_text`}, `image_path` 포함
-- `extracted_rule/images/*.png` (별표 페이지 스냅샷)
-- `extracted_rule/tables/*.md` (camelot 성공 시)
-
-2. **벡터 DB 빌드**
+### 2. 백엔드 실행
 
 ```bash
-# (예) 규칙 DB
-py be/scripts/build_vector_db.py -i extracted_rule\rules_extracted.json -o vector_db_rule --law-name "산업안전보건기준에 관한 규칙"
-
-# (예) 법령 DB
-py be/scripts/build_vector_db.py -i data\laws\laws_extracted.json -o vector_db_law --law-name "산업안전보건법"
-```
-
----
-
-## ▶️ 백엔드 실행
-
-### 로컬 가상환경
-
-```bash
-cd be
-python -m venv .venv
-. .venv/Scripts/activate          # Windows
+cd packages/api
 pip install -r requirements.txt
-uvicorn main:app --host 127.0.0.1 --port 8000 --reload
-# 또는
-python main.py
+alembic upgrade head
+uvicorn app.main:app --reload --port 8000
 ```
 
-### 엔드포인트
-
-- `GET /health` → `{status, dbs:[{label,size}] }`
-- `POST /ask`
-
-  ```json
-  {
-    "question": "밀폐공간의 정의는?",
-    "topk": 5,
-    "mode": "auto", // auto|law|rule
-    "ctx_chars": 6000,
-    "dbs": ["vector_db_law", "vector_db_rule"] // 생략하면 기본 EHS_DB_DIRS
-  }
-  ```
-
-- `POST /reload-db`:
-
-  ```json
-  { "dbs": ["vector_db_law", "vector_db_rule"] }
-  ```
-
-- `GET /static/...` 정적 파일 (예: `/static/extracted_rule/images/별표12_p100.png`)
-
----
-
-## 💻 프론트엔드 실행
-
-`VITE_API_URL`로 백엔드 주소 지정 (미설정 시 `http://127.0.0.1:8000`)
+### 3. Admin 프론트엔드
 
 ```bash
-cd frontend
-npm i
-npm run dev
+cd apps/admin
+npm install
+npm run dev  # http://localhost:3000
 ```
 
-UI 특징
-
-- **상단 안내 배너**: “이 응답은 보조자료입니다. **최종 판단은 원문 법령 확인**이 필요합니다.”
-- **근거 토글**: 기본 닫힘 → 열면 이미지/표 프리뷰 + 근거 리스트
-- 모드(auto/law/rule), DB(법률/규칙), TopK, 컨텍스트 길이 조절
-
----
-
-## 🚀 컨테이너 & 배포
-
-### Docker (로컬)
+### 4. Worker 앱 (선택)
 
 ```bash
-cd be
-docker build -t ehs-rag-be .
-docker run -it --rm -p 8000:8000 --env-file .env ehs-rag-be
-# http://127.0.0.1:8000/health
+cd apps/worker
+npm install
+npm run dev  # http://localhost:3001
 ```
 
-### Cloudtype (간단)
+### 5. SuperAdmin 생성
 
-- **Dockerfile** 사용
-- 포트는 \*\*환경변수 `PORT`\*\*로 주입됨 → `main.py`가 자동 바인딩(`0.0.0.0:PORT`)
-- 볼륨/퍼시스턴스 필요 시 `extracted_rule/`, `vector_db_*` 경로 바인딩
-
-### Heroku / Render (Container)
-
-- “Deploy via Dockerfile” 방식 권장
-- `OPENAI_API_KEY`, `EHS_DB_DIRS` 환경변수 설정
-- 정적 파일은 컨테이너 이미지에 포함되도록 빌드(또는 외부 스토리지)
+```bash
+cd packages/api
+python scripts/create_superadmin.py
+# → superadmin@safetyai.kr / super123
+```
 
 ---
 
-## 🧭 예시 질의 프롬프트
+## API 엔드포인트 (40+)
 
-- “**밀폐공간의 정의와 적용 대상**을 알려줘.”
-- “**밀폐공간 작업 시 산소농도 기준**과 **환기 요구사항**은?”
-- “**사다리 작업대 발판 폭** 최소 기준이 뭐야?”
-- “**로스팅 공정 분진 노출 기준**이 별표에 있나?”
-- “**크레인 훅 안전장치** 관련 조문 찾아줘. (규칙/별표 우선)”
+<details>
+<summary>전체 API 목록 보기</summary>
 
----
+```
+Auth:       POST /api/auth/register, login, refresh, me, users
+Sites:      CRUD /api/sites, departments, processes, equipment, work-zones
+Incidents:  CRUD /api/incidents, files
+AI:         POST /api/ai/incidents/:id/analyze, checklist, legal
+Analytics:  GET  /api/analytics/summary, by-type, by-month, by-status
+Reports:    GET  /api/reports/monthly (PDF)
+News:       GET  /api/news (RSS + AI분석)
+Anonymous:  POST /api/anonymous-reports (인증불필요)
+Voice:      POST /api/voice/transcribe, parse, submit
+Law API:    GET  /api/law/search, detail/:id, articles
+Guide:      CRUD /api/safety-guide, translate, qr, ack
+Game:       GET  /api/gamification/ranking, quiz, risk-scores
+SuperAdmin: GET  /api/superadmin/companies, stats
+RAG:        POST /api/rag/ask (레거시 호환: POST /ask)
+```
 
-## 🩺 트러블슈팅
-
-### pdf2image: `PDFInfoNotInstalledError`
-
-- **Poppler 미설치/경로** 문제
-
-  - Windows: winget으로 설치 후 PATH에 등록되었는지 확인
-  - 또는 `--poppler-path "C:\Program Files\poppler-25.07.0\Library\bin"`
-
-### Tesseract: 한국어 데이터 미검출
-
-- `tesseract --list-langs`에 `kor` 없으면:
-
-  - `kor.traineddata`를 `C:\Program Files\Tesseract-OCR\tessdata` 또는
-    `%LOCALAPPDATA%\Tesseract-OCR\tessdata`에 두고
-  - 필요 시 `TESSDATA_PREFIX` 환경변수 설정
-
-### Camelot: `No tables found` 경고
-
-- 스캔 PDF/레이아웃 문제일 수 있음
-
-  - **정상**입니다. 실패 페이지는 **건너뜀** (전체 파이프라인 계속 진행)
-
-### 프론트에서 이미지 미표시
-
-- 백엔드 `/static/...` URL 직접 열어 확인
-
-  - 예: `http://127.0.0.1:8000/static/extracted_rule/images/별표12_p100.png`
-
-- CORS 문제 → 백엔드 `CORSMiddleware` 확인(현재 `*` 허용)
-- JSON의 `image_url` 필드가 제대로 내려오는지 확인 (`/ask` 응답)
-
-### 응답이 엉뚱하거나 빈약
-
-- `mode="rule"`로 강제하여 규칙/별표 우선
-- `topk` ↑, `ctx_chars` ↑
-- 벡터 DB(규칙/법령) 최신화/증분 빌드
+</details>
 
 ---
 
-## 🧰 개발 팁
+## 권한 체계 (4-Role)
 
-- **스키마 확장**: `hits[].content_format == "markdown"`이면 표로 렌더
-- **라벨 표기**: `[법령명 · 조문]` (DB명 표기 제거)
-- **성능**: `ctx_chars`로 LLM 토큰 최적화, `topk` 5\~8 추천
-- **안전성**: 답변 상단 안내(“보조자료” 문구)로 사용자 기대치 조율
-
----
-
-## 🗺️ 로드맵(아이디어)
-
-- 🔍 **하이라이트 추출**: 근거 내 핵심 문구 강조
-- 📎 **원문 링크 리졸브**: 국가법령정보센터 deep link 매핑
-- 🔁 **증분 업데이트**: 관보/개정 추적 후 자동 리빌드
-- 👥 **사용자 피드백 루프**: 답변 품질 투표 + 튜닝
+| Role | 접근 범위 |
+|------|-----------|
+| `superadmin` | 플랫폼 전체 관리, 기업 목록, 통계 |
+| `admin` | 기업 내 모든 사업장/사용자/데이터 |
+| `field_manager` | 배정된 사업장만 (사고 등록/관리) |
+| `worker` | Worker 앱 (음성보고/제보/퀴즈) |
 
 ---
 
-## 🧾 라이선스
+## 데모 계정
 
-MIT (필요 시 조정)
-
----
-
-## 🙋‍♂️ 면접 포인트(요약)
-
-- **문서 구조 → 지식 스토어 → 검색 → 근거 중심 생성**의 **엔드 투 엔드 파이프라인**을 스스로 설계/구현
-- **OCR/표 처리**로 “텍스트만 있는 RAG”의 한계를 넘어, \*\*별표(숫자/치수/표)\*\*까지 반영
-- **근거 토글 UX**로 **정확성·신뢰**와 **가독성**을 동시에 잡음
-- **윈도우/도커/클라우드**까지 고려한 실무형 배포 전략
+| 역할 | 이메일 | 비밀번호 |
+|------|--------|----------|
+| SuperAdmin | `superadmin@safetyai.kr` | `super123` |
+| Admin | `admin@safety.kr` | `admin123` |
+| 현장담당자 | `field@safety.kr` | `field123` |
+| 작업자 | `worker@safety.kr` | `worker123` |
 
 ---
 
-> “이 프로젝트의 핵심은 **근거성**입니다.
-> 답변만이 아니라 \*\*증거(원문/별표/표)\*\*를 함께 보여 주는 것이 진짜 ‘도움’입니다.”
+## 라이선스
+
+MIT
+
+---
+
+<p align="center">
+  <b>SafetyAI</b> — AI 기반 산업안전 리스크 관리 플랫폼<br/>
+  <sub>Built with FastAPI · React · OpenAI · FAISS</sub>
+</p>

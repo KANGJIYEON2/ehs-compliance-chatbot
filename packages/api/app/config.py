@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     OPENAI_TIMEOUT: float = 90.0
     EHS_DB_DIRS: str = "vector_db_law,vector_db_rule"
 
+    # Law API (국가법령정보센터)
+    LAW_API_KEY: str = ""
+
     # CORS
     CORS_ORIGINS: str = "*"
 

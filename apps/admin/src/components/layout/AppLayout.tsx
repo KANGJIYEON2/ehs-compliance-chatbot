@@ -11,10 +11,10 @@ export default function AppLayout() {
   }
 
   return (
-    <div className="flex h-screen bg-slate-950">
+    <div className="flex h-screen">
       <Sidebar />
-      <main className="flex-1 overflow-auto bg-gradient-to-br from-slate-950 to-slate-900">
-        <div className="max-w-6xl mx-auto px-6 py-6">
+      <main className="flex-1 overflow-auto bg-slate-50">
+        <div className="max-w-6xl mx-auto px-8 py-6">
           <Outlet />
         </div>
       </main>

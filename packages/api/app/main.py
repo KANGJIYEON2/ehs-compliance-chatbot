@@ -11,6 +11,7 @@ import app.database as database
 from app.database import init_db, Base
 from app.models import *  # noqa: F401,F403 — register all models
 from app.services.rag_service import rag_service
+from app.services.law_api_client import law_api_client
 from app.services.ai_agents import NewsAgent, IncidentAgent, LawAgent, VoiceAgent
 
 # AI Agent 싱글톤
@@ -32,6 +33,8 @@ async def lifespan(app: FastAPI):
         rag_service.initialize(settings)
     except Exception as e:
         print(f"[WARNING] RAG service init failed: {e}")
+    # 법령 API 초기화
+    law_api_client.initialize(settings)
     # AI Agents 초기화
     news_agent.initialize(settings)
     incident_agent.initialize(settings)
@@ -58,7 +61,7 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory=str(API_PACKAGE_ROOT)), name="static")
 
 # ── 라우터 등록 ──
-from app.routers import rag, auth, sites, master_data, incidents, attachments, news, ai_analysis, analytics, reports, anonymous_reports, voice, safety_guide, gamification, superadmin  # noqa: E402
+from app.routers import rag, auth, sites, master_data, incidents, attachments, news, ai_analysis, analytics, reports, anonymous_reports, voice, safety_guide, gamification, superadmin, law_api  # noqa: E402
 
 app.include_router(rag.router)
 app.include_router(auth.router)
@@ -75,6 +78,7 @@ app.include_router(voice.router)
 app.include_router(safety_guide.router)
 app.include_router(gamification.router)
 app.include_router(superadmin.router)
+app.include_router(law_api.router)
 
 
 # ── 레거시 엔드포인트 (기존 FE ���환) ──

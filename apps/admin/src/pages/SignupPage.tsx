@@ -9,7 +9,7 @@ export default function SignupPage() {
   const setAuth = useAuthStore((s) => s.setAuth);
   const accessToken = useAuthStore((s) => s.accessToken);
 
-  if (accessToken) return <Navigate to="/" replace />;
+  if (accessToken) return <Navigate to="/dashboard" replace />;
 
   const [form, setForm] = useState({
     company_name: "", business_number: "", email: "", password: "", name: "",
@@ -39,7 +39,7 @@ export default function SignupPage() {
       });
       if (!meRes.ok) throw new Error("사용자 정보 조회 실패");
       setAuth(tokens, await meRes.json());
-      navigate("/");
+      navigate("/dashboard");
     } catch (err: any) {
       setError(err.message);
     } finally {

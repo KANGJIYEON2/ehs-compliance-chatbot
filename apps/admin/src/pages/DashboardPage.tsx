@@ -96,8 +96,8 @@ export default function DashboardPage() {
       {/* KPI 카드 */}
       {summary && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard label="전체 사고" value={summary.total} icon={AlertTriangle} color="slate" link="/incidents" />
-          <StatCard label="미조치" value={pending} icon={Clock} color={pending > 0 ? "amber" : "slate"} link="/incidents" badge={pending > 0 ? "주의" : undefined} />
+          <StatCard label="전체 사고" value={summary.total} icon={AlertTriangle} color="slate" link="/dashboard/incidents" />
+          <StatCard label="미조치" value={pending} icon={Clock} color={pending > 0 ? "amber" : "slate"} link="/dashboard/incidents" badge={pending > 0 ? "주의" : undefined} />
           <StatCard label="조치완료" value={summary.by_status.resolved} icon={CheckCircle2} color="emerald" />
           <StatCard label="재발관리" value={summary.by_status.monitoring} icon={Eye} color="purple" />
         </div>
@@ -152,7 +152,7 @@ export default function DashboardPage() {
             <Newspaper size={16} className="text-emerald-600" />
             <h2 className="text-sm font-semibold text-slate-700">산업안전 뉴스</h2>
           </div>
-          <Link to="/news" className="flex items-center gap-1 text-xs text-slate-400 hover:text-emerald-600 transition-colors">
+          <Link to="/dashboard/news" className="flex items-center gap-1 text-xs text-slate-400 hover:text-emerald-600 transition-colors">
             전체 보기 <ArrowRight size={12} />
           </Link>
         </div>

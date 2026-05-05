@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import AppLayout from "./components/layout/AppLayout";
+import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import DashboardPage from "./pages/DashboardPage";
@@ -17,10 +18,11 @@ import RiskScoresPage from "./pages/RiskScoresPage";
 import SafetyGuidePage from "./pages/SafetyGuidePage";
 
 export const router = createBrowserRouter([
+  { path: "/", element: <LandingPage /> },
   { path: "/login", element: <LoginPage /> },
   { path: "/signup", element: <SignupPage /> },
   {
-    path: "/",
+    path: "/dashboard",
     element: <AppLayout />,
     children: [
       { index: true, element: <DashboardPage /> },

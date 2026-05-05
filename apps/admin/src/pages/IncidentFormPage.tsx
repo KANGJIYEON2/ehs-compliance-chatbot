@@ -72,7 +72,7 @@ export default function IncidentFormPage() {
         throw new Error(data.detail || "등록 실패");
       }
       const incident = await res.json();
-      navigate(`/incidents/${incident.id}`);
+      navigate(`/dashboard/incidents/${incident.id}`);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -194,7 +194,7 @@ export default function IncidentFormPage() {
           </button>
           <button
             type="button"
-            onClick={() => navigate("/incidents")}
+            onClick={() => navigate("/dashboard/incidents")}
             className="px-6 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm transition-colors"
           >
             취소

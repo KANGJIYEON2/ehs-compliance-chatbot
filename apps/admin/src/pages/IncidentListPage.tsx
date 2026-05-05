@@ -68,7 +68,7 @@ export default function IncidentListPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-white">사고/아차사고 관리</h1>
         <Link
-          to="/incidents/new"
+          to="/dashboard/incidents/new"
           className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm transition-colors"
         >
           <Plus size={16} />
@@ -116,7 +116,7 @@ export default function IncidentListPage() {
           {incidents.map((inc) => (
             <Link
               key={inc.id}
-              to={`/incidents/${inc.id}`}
+              to={`/dashboard/incidents/${inc.id}`}
               className="block bg-slate-800 rounded-xl p-4 border border-slate-700 hover:border-slate-500 transition-colors"
             >
               <div className="flex items-center gap-3">

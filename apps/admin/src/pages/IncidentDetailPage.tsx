@@ -82,7 +82,7 @@ export default function IncidentDetailPage() {
   const fetchIncident = async () => {
     const res = await apiFetch(`/api/incidents/${id}`);
     if (res.ok) setIncident(await res.json());
-    else navigate("/incidents");
+    else navigate("/dashboard/incidents");
     setLoading(false);
   };
 
@@ -113,7 +113,7 @@ export default function IncidentDetailPage() {
   const handleDelete = async () => {
     if (!confirm("정말 삭제하시겠습니까?")) return;
     const res = await apiFetch(`/api/incidents/${id}`, { method: "DELETE" });
-    if (res.ok) navigate("/incidents");
+    if (res.ok) navigate("/dashboard/incidents");
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,7 +185,7 @@ export default function IncidentDetailPage() {
     <div className="max-w-3xl space-y-6">
       {/* 헤더 */}
       <div className="flex items-center gap-3">
-        <button onClick={() => navigate("/incidents")} className="text-slate-400 hover:text-white">
+        <button onClick={() => navigate("/dashboard/incidents")} className="text-slate-400 hover:text-white">
           <ArrowLeft size={20} />
         </button>
         <h1 className="text-2xl font-bold text-white">사고 상세</h1>

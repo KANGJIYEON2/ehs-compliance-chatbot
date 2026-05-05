@@ -10,32 +10,32 @@ const navGroups = [
   {
     label: null,
     items: [
-      { to: "/", icon: LayoutDashboard, label: "대시보드" },
+      { to: "/dashboard", icon: LayoutDashboard, label: "대시보드" },
     ],
   },
   {
     label: "사고 관리",
     items: [
-      { to: "/incidents", icon: AlertTriangle, label: "사고 목록" },
-      { to: "/voice", icon: Mic, label: "음성 보고" },
-      { to: "/reports", icon: MessageSquareWarning, label: "익명 제보" },
+      { to: "/dashboard/incidents", icon: AlertTriangle, label: "사고 목록" },
+      { to: "/dashboard/voice", icon: Mic, label: "음성 보고" },
+      { to: "/dashboard/reports", icon: MessageSquareWarning, label: "익명 제보" },
     ],
   },
   {
     label: "안전 활동",
     items: [
-      { to: "/quiz", icon: HelpCircle, label: "안전 퀴즈" },
-      { to: "/ranking", icon: Trophy, label: "안전 랭킹" },
-      { to: "/risk", icon: Activity, label: "위험 예측" },
-      { to: "/news", icon: Newspaper, label: "안전 뉴스" },
+      { to: "/dashboard/quiz", icon: HelpCircle, label: "안전 퀴즈" },
+      { to: "/dashboard/ranking", icon: Trophy, label: "안전 랭킹" },
+      { to: "/dashboard/risk", icon: Activity, label: "위험 예측" },
+      { to: "/dashboard/news", icon: Newspaper, label: "안전 뉴스" },
     ],
   },
   {
     label: "관리",
     items: [
-      { to: "/safety-guide", icon: BookOpen, label: "다국어 안내" },
-      { to: "/chat", icon: Search, label: "법령 검색" },
-      { to: "/sites", icon: Building2, label: "사업장 관리" },
+      { to: "/dashboard/safety-guide", icon: BookOpen, label: "다국어 안내" },
+      { to: "/dashboard/chat", icon: Search, label: "법령 검색" },
+      { to: "/dashboard/sites", icon: Building2, label: "사업장 관리" },
     ],
   },
 ];
@@ -68,7 +68,7 @@ export default function Sidebar() {
             <div className="space-y-0.5">
               {group.items.map(({ to, icon: Icon, label }) => (
                 <NavLink
-                  key={to} to={to} end={to === "/"}
+                  key={to} to={to} end={to === "/dashboard"}
                   className={({ isActive }) =>
                     `flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg text-[13px] transition-all duration-150 ${
                       isActive

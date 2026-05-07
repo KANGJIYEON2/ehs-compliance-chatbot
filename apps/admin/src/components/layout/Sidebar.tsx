@@ -4,6 +4,7 @@ import {
   LayoutDashboard, AlertTriangle, Mic, MessageSquareWarning,
   Newspaper, HelpCircle, Trophy, Activity,
   Search, Building2, BookOpen, LogOut, Shield,
+  ClipboardCheck, FileSearch,
 } from "lucide-react";
 
 const navGroups = [
@@ -19,6 +20,8 @@ const navGroups = [
       { to: "/dashboard/incidents", icon: AlertTriangle, label: "사고 목록" },
       { to: "/dashboard/voice", icon: Mic, label: "음성 보고" },
       { to: "/dashboard/reports", icon: MessageSquareWarning, label: "익명 제보" },
+      { to: "/dashboard/tbm", icon: ClipboardCheck, label: "TBM" },
+      { to: "/dashboard/risk-assessment", icon: FileSearch, label: "위험성평가" },
     ],
   },
   {

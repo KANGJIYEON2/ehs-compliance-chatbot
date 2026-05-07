@@ -16,6 +16,8 @@ import QuizPage from "./pages/QuizPage";
 import RankingPage from "./pages/RankingPage";
 import RiskScoresPage from "./pages/RiskScoresPage";
 import SafetyGuidePage from "./pages/SafetyGuidePage";
+import TBMPage from "./pages/TBMPage";
+import RiskAssessmentPage from "./pages/RiskAssessmentPage";
 
 export const router = createBrowserRouter([
   { path: "/", element: <LandingPage /> },
@@ -35,6 +37,8 @@ export const router = createBrowserRouter([
       { path: "quiz", element: <QuizPage /> },
       { path: "ranking", element: <RankingPage /> },
       { path: "risk", element: <RiskScoresPage /> },
+      { path: "tbm", element: <TBMPage /> },
+      { path: "risk-assessment", element: <RiskAssessmentPage /> },
       { path: "safety-guide", element: <SafetyGuidePage /> },
       { path: "chat", element: <RagChatPage /> },
       { path: "sites", element: <SitesPage /> },

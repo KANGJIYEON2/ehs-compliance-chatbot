@@ -8,3 +8,5 @@ from app.models.ai_analysis import AIAnalysisResult  # noqa: F401
 from app.models.anonymous_report import AnonymousReport  # noqa: F401
 from app.models.safety_guide import SafetyGuide, SafetyGuideTranslation, TrainingRecord  # noqa: F401
 from app.models.gamification import SafetyPoint, SafetyQuiz, QuizResponse, RiskScore  # noqa: F401
+from app.models.tbm import TBMSession, TBMAttendee  # noqa: F401
+from app.models.risk_assessment import RiskAssessment  # noqa: F401

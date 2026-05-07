@@ -8,7 +8,8 @@ import {
 } from "recharts";
 import {
   Newspaper, Shield, ArrowRight, AlertTriangle, CheckCircle2,
-  Clock, Eye, FileDown,
+  Clock, Eye, FileDown, TrendingUp, TrendingDown, Info, Plus,
+  Mic, MessageSquareWarning, HelpCircle,
 } from "lucide-react";
 
 interface NewsItem {
@@ -24,6 +25,7 @@ interface Summary {
 }
 
 interface TypeCount { type: string; count: number; }
+interface Insight { type: string; title: string; desc: string; }
 
 const TYPE_LABELS: Record<string, string> = {
   caught: "끼임", fall: "추락", collision: "충돌", electric: "감전",
@@ -41,11 +43,13 @@ export default function DashboardPage() {
   const [summary, setSummary] = useState<Summary | null>(null);
   const [byType, setByType] = useState<TypeCount[]>([]);
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [insights, setInsights] = useState<Insight[]>([]);
 
   useEffect(() => {
     apiFetch("/api/news?limit=4").then(async (r) => { if (r.ok) setNews(await r.json()); setNewsLoading(false); });
     apiFetch("/api/analytics/summary").then(async (r) => { if (r.ok) setSummary(await r.json()); });
     apiFetch("/api/analytics/by-type").then(async (r) => { if (r.ok) setByType(await r.json()); });
+    apiFetch("/api/analytics/insights").then(async (r) => { if (r.ok) { const d = await r.json(); setInsights(d.insights || []); } });
   }, []);
 
   const downloadPdf = async () => {
@@ -100,6 +104,69 @@ export default function DashboardPage() {
           <StatCard label="미조치" value={pending} icon={Clock} color={pending > 0 ? "amber" : "slate"} link="/dashboard/incidents" badge={pending > 0 ? "주의" : undefined} />
           <StatCard label="조치완료" value={summary.by_status.resolved} icon={CheckCircle2} color="emerald" />
           <StatCard label="재발관리" value={summary.by_status.monitoring} icon={Eye} color="purple" />
+        </div>
+      )}
+
+      {/* AI 인사이트 */}
+      {insights.length > 0 && (
+        <div className="space-y-2">
+          {insights.map((ins, i) => {
+            const styles: Record<string, { bg: string; border: string; icon: any; iconColor: string }> = {
+              danger: { bg: "bg-red-50", border: "border-red-200", icon: TrendingUp, iconColor: "text-red-500" },
+              warning: { bg: "bg-amber-50", border: "border-amber-200", icon: AlertTriangle, iconColor: "text-amber-500" },
+              success: { bg: "bg-emerald-50", border: "border-emerald-200", icon: TrendingDown, iconColor: "text-emerald-500" },
+              info: { bg: "bg-blue-50", border: "border-blue-200", icon: Info, iconColor: "text-blue-500" },
+              empty: { bg: "bg-slate-50", border: "border-slate-200", icon: Info, iconColor: "text-slate-400" },
+            };
+            const s = styles[ins.type] || styles.info;
+            const Icon = s.icon;
+            return (
+              <div key={i} className={`${s.bg} ${s.border} border rounded-xl px-5 py-3 flex items-start gap-3`}>
+                <Icon size={18} className={`${s.iconColor} mt-0.5 shrink-0`} />
+                <div>
+                  <p className="text-sm font-semibold text-slate-800">{ins.title}</p>
+                  <p className="text-xs text-slate-500 mt-0.5">{ins.desc}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* 빈 상태 온보딩 */}
+      {summary && summary.total === 0 && (
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+          <h3 className="text-lg font-bold text-slate-900 mb-2">시작하기</h3>
+          <p className="text-sm text-slate-500 mb-6">SafetyAI를 활용하려면 먼저 데이터가 필요합니다. 아래 단계를 따라해보세요.</p>
+          <div className="grid md:grid-cols-3 gap-4">
+            <Link to="/dashboard/incidents/new" className="flex items-center gap-3 p-4 rounded-xl border border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/50 transition-all group">
+              <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
+                <Plus size={20} className="text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-slate-800">첫 사고 등록</p>
+                <p className="text-xs text-slate-400">아차사고도 등록하세요</p>
+              </div>
+            </Link>
+            <Link to="/dashboard/voice" className="flex items-center gap-3 p-4 rounded-xl border border-slate-200 hover:border-red-300 hover:bg-red-50/50 transition-all group">
+              <div className="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center group-hover:bg-red-200 transition-colors">
+                <Mic size={20} className="text-red-600" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-slate-800">음성으로 보고</p>
+                <p className="text-xs text-slate-400">말로 간편하게</p>
+              </div>
+            </Link>
+            <Link to="/dashboard/sites" className="flex items-center gap-3 p-4 rounded-xl border border-slate-200 hover:border-blue-300 hover:bg-blue-50/50 transition-all group">
+              <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                <MessageSquareWarning size={20} className="text-blue-600" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-slate-800">사업장 설정</p>
+                <p className="text-xs text-slate-400">부서/공정/장비 등록</p>
+              </div>
+            </Link>
+          </div>
         </div>
       )}
 

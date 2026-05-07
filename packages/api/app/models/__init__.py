@@ -10,3 +10,4 @@ from app.models.safety_guide import SafetyGuide, SafetyGuideTranslation, Trainin
 from app.models.gamification import SafetyPoint, SafetyQuiz, QuizResponse, RiskScore  # noqa: F401
 from app.models.tbm import TBMSession, TBMAttendee  # noqa: F401
 from app.models.risk_assessment import RiskAssessment  # noqa: F401
+from app.models.notification import Notification  # noqa: F401

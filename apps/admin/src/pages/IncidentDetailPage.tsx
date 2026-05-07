@@ -21,6 +21,9 @@ interface Incident {
   cause_estimate: string | null;
   action_taken: string | null;
   status: string;
+  assignee_id: string | null;
+  assignee_name: string | null;
+  due_date: string | null;
   created_at: string;
   updated_at: string;
   attachments: Attachment[];
@@ -208,6 +211,47 @@ export default function IncidentDetailPage() {
             </button>
           ))}
         </div>
+      </div>
+
+      {/* 담당자 + 기한 */}
+      <div className="bg-slate-800 rounded-xl p-4 border border-slate-700">
+        <span className="text-sm text-slate-300 mb-3 block">조치 담당자 / 기한</span>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <input
+              type="text"
+              placeholder="담당자 이름"
+              defaultValue={incident.assignee_name || ""}
+              onBlur={(e) => {
+                if (e.target.value !== (incident.assignee_name || "")) {
+                  apiFetch(`/api/incidents/${id}`, {
+                    method: "PATCH",
+                    body: JSON.stringify({ assignee_name: e.target.value }),
+                  }).then(async (r) => { if (r.ok) setIncident(await r.json()); });
+                }
+              }}
+              className="w-full px-3 py-2 bg-slate-700 text-white rounded-lg border border-slate-600 text-sm focus:border-emerald-500 focus:outline-none"
+            />
+          </div>
+          <div>
+            <input
+              type="date"
+              defaultValue={incident.due_date ? new Date(incident.due_date).toISOString().split("T")[0] : ""}
+              onChange={(e) => {
+                apiFetch(`/api/incidents/${id}`, {
+                  method: "PATCH",
+                  body: JSON.stringify({ due_date: e.target.value ? new Date(e.target.value).toISOString() : null }),
+                }).then(async (r) => { if (r.ok) setIncident(await r.json()); });
+              }}
+              className="w-full px-3 py-2 bg-slate-700 text-white rounded-lg border border-slate-600 text-sm focus:border-emerald-500 focus:outline-none"
+            />
+          </div>
+        </div>
+        {incident.due_date && new Date(incident.due_date) < new Date() && incident.status !== "resolved" && (
+          <p className="text-red-400 text-xs mt-2 flex items-center gap-1">
+            <AlertTriangle size={12} /> 조치 기한이 초과되었습니다!
+          </p>
+        )}
       </div>
 
       {/* 사고 정보 */}

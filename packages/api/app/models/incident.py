@@ -76,6 +76,13 @@ class Incident(Base):
         String(20), nullable=False, default=IncidentStatus.reported.value
     )
 
+    # 조치 담당자 + 기한
+    assignee_id: Mapped[str | None] = mapped_column(
+        String(36), ForeignKey("users.id"), nullable=True
+    )
+    assignee_name: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    due_date: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.utcnow, onupdate=datetime.utcnow

@@ -28,6 +28,9 @@ class IncidentUpdate(BaseModel):
     cause_estimate: str | None = None
     action_taken: str | None = None
     status: str | None = Field(None, description="reported|investigating|resolved|monitoring")
+    assignee_id: str | None = None
+    assignee_name: str | None = None
+    due_date: datetime | None = None
 
 
 class AttachmentResponse(BaseModel):
@@ -54,6 +57,9 @@ class IncidentResponse(BaseModel):
     cause_estimate: str | None = None
     action_taken: str | None = None
     status: str
+    assignee_id: str | None = None
+    assignee_name: str | None = None
+    due_date: datetime | None = None
     created_at: datetime
     updated_at: datetime
     attachments: list[AttachmentResponse] = []

@@ -9,7 +9,7 @@ import {
 import {
   Newspaper, Shield, ArrowRight, AlertTriangle, CheckCircle2,
   Clock, Eye, FileDown, TrendingUp, TrendingDown, Info, Plus,
-  Mic, MessageSquareWarning, HelpCircle,
+  Mic, MessageSquareWarning, HelpCircle, ClipboardCheck,
 } from "lucide-react";
 
 interface NewsItem {
@@ -82,6 +82,27 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      {/* 퀵 액션 바 */}
+      <div className="flex items-center gap-3 bg-white rounded-2xl border border-slate-200 shadow-sm p-3">
+        <Link to="/dashboard/voice"
+          className="flex items-center gap-2 px-5 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl text-sm font-medium transition-colors shadow-sm">
+          <Mic size={16} /> 음성 보고
+        </Link>
+        <Link to="/dashboard/incidents/new"
+          className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm transition-colors">
+          <Plus size={16} /> 사고 등록
+        </Link>
+        <Link to="/dashboard/tbm"
+          className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm transition-colors">
+          <ClipboardCheck size={16} /> TBM
+        </Link>
+        <div className="flex-1" />
+        <button onClick={downloadPdf} disabled={pdfLoading}
+          className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm transition-colors disabled:opacity-50">
+          <FileDown size={15} /> {pdfLoading ? "생성 중..." : "월간 리포트"}
+        </button>
+      </div>
+
       {/* 헤더 */}
       <div className="flex items-center justify-between">
         <div>
@@ -90,11 +111,6 @@ export default function DashboardPage() {
             {user?.name}님, {new Date().toLocaleDateString("ko-KR", { month: "long", day: "numeric" })} 기준
           </p>
         </div>
-        <button onClick={downloadPdf} disabled={pdfLoading}
-          className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-sm border border-slate-200 transition-all disabled:opacity-50 shadow-sm">
-          <FileDown size={15} />
-          {pdfLoading ? "생성 중..." : "월간 리포트"}
-        </button>
       </div>
 
       {/* KPI 카드 */}

@@ -104,6 +104,19 @@ def create_incident(
         status=IncidentStatus.reported.value,
     )
     db.add(incident)
+
+    # 관리자에게 알림
+    from app.routers.notifications import create_notification
+    admins = db.query(User).filter(User.company_id == user.company_id, User.role == "admin").all()
+    for admin in admins:
+        if admin.id != user.id:
+            create_notification(
+                db, admin.id, "incident_new",
+                f"새 사고 접수: {req.incident_type}",
+                req.description[:100],
+                f"/dashboard/incidents/{incident.id}",
+            )
+
     db.commit()
     db.refresh(incident)
     return incident
@@ -147,6 +160,16 @@ def update_incident(
         raise HTTPException(status_code=400, detail="유효하지 않은 심각도")
     if "status" in update_data and update_data["status"] not in VALID_STATUSES:
         raise HTTPException(status_code=400, detail="유효하지 않은 상태")
+
+    # 담당자 배정 시 알림
+    if "assignee_id" in update_data and update_data["assignee_id"]:
+        from app.routers.notifications import create_notification
+        create_notification(
+            db, update_data["assignee_id"], "incident_assigned",
+            "사고 조치가 배정되었습니다",
+            f"{incident.description[:80]}",
+            f"/dashboard/incidents/{incident_id}",
+        )
 
     for key, value in update_data.items():
         setattr(incident, key, value)

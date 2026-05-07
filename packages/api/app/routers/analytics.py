@@ -183,4 +183,17 @@ def get_insights(
             "desc": "사고가 없는 것이 아니라 기록이 없는 것일 수 있습니다. 아차사고도 등록해주세요.",
         })
 
-    return {"insights": insights, "this_month": this_month, "last_month": last_month, "unresolved": unresolved}
+    # 기한 초과 건수
+    overdue = base.filter(
+        Incident.due_date != None,
+        Incident.due_date < now,
+        Incident.status.in_(["reported", "investigating"]),
+    ).count()
+    if overdue > 0:
+        insights.insert(0, {
+            "type": "danger",
+            "title": f"조치 기한 초과 {overdue}건",
+            "desc": "기한이 지난 사고가 있습니다. 즉시 확인하고 조치를 완료하세요.",
+        })
+
+    return {"insights": insights, "this_month": this_month, "last_month": last_month, "unresolved": unresolved, "overdue": overdue}

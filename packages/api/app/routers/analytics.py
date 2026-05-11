@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from app.database import get_db
+from app.database import get_db, year_month
 from app.models.user import User, UserRole
 from app.models.site import Site
 from app.models.incident import Incident
@@ -82,12 +82,12 @@ def get_by_month(
     """월별 사고 추이"""
     rows = (
         db.query(
-            func.strftime("%Y-%m", Incident.occurred_at).label("month"),
+            year_month(Incident.occurred_at).label("month"),
             func.count().label("count"),
         )
         .join(Site).filter(Site.company_id == user.company_id)
-        .group_by(func.strftime("%Y-%m", Incident.occurred_at))
-        .order_by(func.strftime("%Y-%m", Incident.occurred_at))
+        .group_by(year_month(Incident.occurred_at))
+        .order_by(year_month(Incident.occurred_at))
         .all()
     )
     return [{"month": m, "count": c} for m, c in rows]

@@ -1,8 +1,8 @@
 import { useAuthStore } from "../stores/authStore";
 
+const _env_url = (import.meta as any)?.env?.VITE_API_URL;
 const API_BASE =
-  (import.meta as any)?.env?.VITE_API_URL?.replace(/\/+$/, "") ||
-  "http://127.0.0.1:8000";
+  typeof _env_url === "string" ? _env_url.replace(/\/+$/, "") : "http://127.0.0.1:8000";
 
 export async function apiFetch(
   path: string,

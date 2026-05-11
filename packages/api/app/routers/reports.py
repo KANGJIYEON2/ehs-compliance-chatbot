@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, Query
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
-from app.database import get_db
+from app.database import get_db, extract_year, extract_month
 from app.models.user import User
 from app.dependencies import get_current_user
 from app.services.report_service import generate_monthly_report
@@ -42,8 +42,8 @@ def download_monthly_report(
                 .join(Site)
                 .filter(
                     Site.company_id == user.company_id,
-                    func.strftime("%Y", Incident.occurred_at) == str(year),
-                    func.strftime("%m", Incident.occurred_at) == f"{month:02d}",
+                    extract_year(Incident.occurred_at) == str(year),
+                    extract_month(Incident.occurred_at) == f"{month:02d}",
                 )
                 .all()
             )

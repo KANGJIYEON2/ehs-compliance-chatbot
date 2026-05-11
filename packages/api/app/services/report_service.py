@@ -19,6 +19,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
+from app.database import extract_year, extract_month
 from app.models.incident import Incident
 from app.models.site import Site
 
@@ -77,8 +78,8 @@ def generate_monthly_report(
         .join(Site)
         .filter(
             Site.company_id == company_id,
-            func.strftime("%Y", Incident.occurred_at) == str(year),
-            func.strftime("%m", Incident.occurred_at) == f"{month:02d}",
+            extract_year(Incident.occurred_at) == str(year),
+            extract_month(Incident.occurred_at) == f"{month:02d}",
         )
     )
 
@@ -104,8 +105,8 @@ def generate_monthly_report(
         .join(Site)
         .filter(
             Site.company_id == company_id,
-            func.strftime("%Y", Incident.occurred_at) == str(prev_year),
-            func.strftime("%m", Incident.occurred_at) == f"{prev_month:02d}",
+            extract_year(Incident.occurred_at) == str(prev_year),
+            extract_month(Incident.occurred_at) == f"{prev_month:02d}",
         )
         .count()
     )

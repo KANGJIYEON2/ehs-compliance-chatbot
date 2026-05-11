@@ -5,10 +5,10 @@ from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
-from sqlalchemy import func
+from sqlalchemy import func, cast, Date
 from sqlalchemy.orm import Session
 
-from app.database import get_db
+from app.database import get_db, _is_sqlite
 from app.models.user import User, UserRole
 from app.models.site import Site
 from app.models.incident import Incident
@@ -114,7 +114,8 @@ def get_today_quiz(
         db.query(SafetyQuiz)
         .filter(
             SafetyQuiz.site_id.in_(site_ids),
-            func.date(SafetyQuiz.generated_at) == str(today),
+            func.date(SafetyQuiz.generated_at) == str(today) if _is_sqlite
+            else cast(SafetyQuiz.generated_at, Date) == today,
         )
         .first()
     )

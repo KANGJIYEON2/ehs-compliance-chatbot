@@ -41,6 +41,7 @@ class NewsAgent(BaseAgent):
         super().__init__()
         self._cache: list[dict[str, Any]] = []
         self._cache_time: float = 0
+        self._cache_key: str = ""
 
     def _fetch_rss(self, url: str) -> list[NewsItem]:
         try:
@@ -125,7 +126,7 @@ JSON 배열만 반환. 마크다운 코드블록 없이 순수 JSON만."""
         now = time.time()
         cache_key = f"{limit}_{use_ai}"
 
-        if self._cache and (now - self._cache_time) < CACHE_TTL:
+        if self._cache and (now - self._cache_time) < CACHE_TTL and self._cache_key == cache_key:
             return self._cache[:limit]
 
         items = self._fetch_all(limit=limit)
@@ -137,4 +138,5 @@ JSON 배열만 반환. 마크다운 코드블록 없이 순수 JSON만."""
 
         self._cache = result
         self._cache_time = now
+        self._cache_key = cache_key
         return result

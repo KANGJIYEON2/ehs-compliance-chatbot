@@ -25,9 +25,9 @@ def list_notifications(
 ):
     query = db.query(Notification).filter(Notification.user_id == user.id)
     if unread_only:
-        query = query.filter(Notification.is_read == False)
+        query = query.filter(Notification.is_read.is_(False))
     items = query.order_by(Notification.created_at.desc()).limit(50).all()
-    unread_count = db.query(Notification).filter(Notification.user_id == user.id, Notification.is_read == False).count()
+    unread_count = db.query(Notification).filter(Notification.user_id == user.id, Notification.is_read.is_(False)).count()
 
     return {
         "unread_count": unread_count,
@@ -60,6 +60,6 @@ def mark_all_read(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
-    db.query(Notification).filter(Notification.user_id == user.id, Notification.is_read == False).update({"is_read": True})
+    db.query(Notification).filter(Notification.user_id == user.id, Notification.is_read.is_(False)).update({"is_read": True})
     db.commit()
     return {"status": "ok"}

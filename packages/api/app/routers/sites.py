@@ -36,7 +36,7 @@ def create_site(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
-    if user.role not in (UserRole.admin.value,):
+    if user.role not in (UserRole.admin.value, UserRole.superadmin.value):
         raise HTTPException(status_code=403, detail="관리자만 사업장을 생성할 수 있습니다")
 
     site = Site(company_id=user.company_id, name=req.name, address=req.address)
@@ -66,7 +66,7 @@ def update_site(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
-    if user.role != UserRole.admin.value:
+    if user.role not in (UserRole.admin.value, UserRole.superadmin.value):
         raise HTTPException(status_code=403, detail="관리자만 수정할 수 있습니다")
 
     site = db.query(Site).filter(Site.id == site_id).first()
@@ -89,7 +89,7 @@ def delete_site(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
-    if user.role != UserRole.admin.value:
+    if user.role not in (UserRole.admin.value, UserRole.superadmin.value):
         raise HTTPException(status_code=403, detail="관리자만 삭제할 수 있습니다")
 
     site = db.query(Site).filter(Site.id == site_id).first()

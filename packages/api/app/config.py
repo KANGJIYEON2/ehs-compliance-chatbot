@@ -10,6 +10,15 @@ class Settings(BaseSettings):
 
     # Auth / JWT
     JWT_SECRET_KEY: str = "change-me-in-production"
+
+    def validate_jwt_secret(self) -> None:
+        if self.JWT_SECRET_KEY in ("change-me-in-production", "dev-secret-key-change-in-production"):
+            import warnings
+            warnings.warn(
+                "JWT_SECRET_KEY is using an insecure default. "
+                "Set a strong random secret via environment variable for production.",
+                stacklevel=2,
+            )
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7

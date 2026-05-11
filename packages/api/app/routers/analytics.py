@@ -32,16 +32,13 @@ def get_summary(
         base = base.filter(Incident.site_id == user.site_id)
 
     total = base.count()
-    by_status = dict(
-        db.query(Incident.status, func.count())
-        .join(Site).filter(Site.company_id == user.company_id)
-        .group_by(Incident.status).all()
-    )
-    by_severity = dict(
-        db.query(Incident.severity, func.count())
-        .join(Site).filter(Site.company_id == user.company_id)
-        .group_by(Incident.severity).all()
-    )
+    status_q = db.query(Incident.status, func.count()).join(Site).filter(Site.company_id == user.company_id)
+    severity_q = db.query(Incident.severity, func.count()).join(Site).filter(Site.company_id == user.company_id)
+    if user.role == UserRole.field_manager.value and user.site_id:
+        status_q = status_q.filter(Incident.site_id == user.site_id)
+        severity_q = severity_q.filter(Incident.site_id == user.site_id)
+    by_status = dict(status_q.group_by(Incident.status).all())
+    by_severity = dict(severity_q.group_by(Incident.severity).all())
 
     return {
         "total": total,
@@ -89,8 +86,8 @@ def get_by_month(
             func.count().label("count"),
         )
         .join(Site).filter(Site.company_id == user.company_id)
-        .group_by("month")
-        .order_by("month")
+        .group_by(func.strftime("%Y-%m", Incident.occurred_at))
+        .order_by(func.strftime("%Y-%m", Incident.occurred_at))
         .all()
     )
     return [{"month": m, "count": c} for m, c in rows]

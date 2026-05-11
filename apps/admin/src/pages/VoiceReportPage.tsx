@@ -143,7 +143,7 @@ export default function VoiceReportPage() {
     if (res.ok) {
       const { incident_id } = await res.json();
       setStep("done");
-      setTimeout(() => navigate(`/incidents/${incident_id}`), 1500);
+      setTimeout(() => navigate(`/dashboard/incidents/${incident_id}`), 1500);
     } else {
       setError("등록에 실패했습니다.");
       setStep("review");

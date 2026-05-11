@@ -89,8 +89,8 @@ class Incident(Base):
     )
 
     # Relationships
-    site: Mapped["Site"] = relationship()  # noqa: F821
-    reporter: Mapped["User"] = relationship()  # noqa: F821
+    site: Mapped["Site"] = relationship(foreign_keys=[site_id])  # noqa: F821
+    reporter: Mapped["User"] = relationship(foreign_keys=[reporter_id])  # noqa: F821
     attachments: Mapped[list["IncidentAttachment"]] = relationship(
         back_populates="incident", cascade="all, delete-orphan"
     )

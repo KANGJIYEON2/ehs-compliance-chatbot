@@ -47,15 +47,23 @@ async def upload_file(
             detail=f"허용되지 않는 파일 형식입니다. 허용: {', '.join(ALLOWED_TYPES)}"
         )
 
-    content = await file.read()
-    if len(content) > MAX_FILE_SIZE:
-        raise HTTPException(status_code=400, detail="파일 크기가 10MB를 초과합니다")
+    # 스트리밍 방식으로 사이즈 체크하며 읽기
+    chunks = []
+    total_size = 0
+    while True:
+        chunk = await file.read(1024 * 64)  # 64KB chunks
+        if not chunk:
+            break
+        total_size += len(chunk)
+        if total_size > MAX_FILE_SIZE:
+            raise HTTPException(status_code=400, detail="파일 크기가 10MB를 초과합니다")
+        chunks.append(chunk)
+    content = b"".join(chunks)
 
     # 저장 경로: uploads/incidents/{incident_id}/{uuid}_{filename}
     save_dir = UPLOAD_DIR / incident_id
     save_dir.mkdir(parents=True, exist_ok=True)
 
-    ext = Path(file.filename or "file").suffix
     saved_name = f"{uuid.uuid4().hex[:8]}_{file.filename}"
     save_path = save_dir / saved_name
 

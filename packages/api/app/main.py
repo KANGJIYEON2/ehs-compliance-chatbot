@@ -25,6 +25,7 @@ from app.schemas.rag import AskRequest, AskResponse, ReloadRequest, HealthRespon
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     settings = get_settings()
+    settings.validate_jwt_secret()
     # DB 초기화
     init_db(settings.EHS_DATABASE_URL)
     Base.metadata.create_all(bind=database.engine)
@@ -49,16 +50,20 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+settings_obj = get_settings()
+cors_origins = [o.strip() for o in settings_obj.CORS_ORIGINS.split(",") if o.strip()]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Static files: packages/api/ 루트를 /static 으로 서빙
-app.mount("/static", StaticFiles(directory=str(API_PACKAGE_ROOT)), name="static")
+# Static files: uploads 디렉토리만 서빙 (보안)
+_uploads_dir = API_PACKAGE_ROOT / "uploads"
+_uploads_dir.mkdir(exist_ok=True)
+app.mount("/static", StaticFiles(directory=str(_uploads_dir)), name="static")
 
 # ── 라우터 등록 ──
 from app.routers import rag, auth, sites, master_data, incidents, attachments, news, ai_analysis, analytics, reports, anonymous_reports, voice, safety_guide, gamification, superadmin, law_api, tbm, risk_assessment, notifications  # noqa: E402

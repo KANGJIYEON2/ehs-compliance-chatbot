@@ -8,14 +8,13 @@ export default function SignupPage() {
   const navigate = useNavigate();
   const setAuth = useAuthStore((s) => s.setAuth);
   const accessToken = useAuthStore((s) => s.accessToken);
-
-  if (accessToken) return <Navigate to="/dashboard" replace />;
-
   const [form, setForm] = useState({
     company_name: "", business_number: "", email: "", password: "", name: "",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  if (accessToken) return <Navigate to="/dashboard" replace />;
 
   const update = (k: string, v: string) => setForm((p) => ({ ...p, [k]: v }));
 

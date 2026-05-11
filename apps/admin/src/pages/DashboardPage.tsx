@@ -78,7 +78,7 @@ export default function DashboardPage() {
   ].filter(d => d.value > 0) : [];
 
   const typeData = byType.map(d => ({ name: TYPE_LABELS[d.type] || d.type, count: d.count }));
-  const pending = summary ? summary.by_status.reported + summary.by_status.investigating : 0;
+  const pending = summary ? (summary.by_status.reported || 0) + (summary.by_status.investigating || 0) : 0;
 
   return (
     <div className="space-y-6">
@@ -118,8 +118,8 @@ export default function DashboardPage() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard label="전체 사고" value={summary.total} icon={AlertTriangle} color="slate" link="/dashboard/incidents" />
           <StatCard label="미조치" value={pending} icon={Clock} color={pending > 0 ? "amber" : "slate"} link="/dashboard/incidents" badge={pending > 0 ? "주의" : undefined} />
-          <StatCard label="조치완료" value={summary.by_status.resolved} icon={CheckCircle2} color="emerald" />
-          <StatCard label="재발관리" value={summary.by_status.monitoring} icon={Eye} color="purple" />
+          <StatCard label="조치완료" value={summary.by_status.resolved || 0} icon={CheckCircle2} color="emerald" />
+          <StatCard label="재발관리" value={summary.by_status.monitoring || 0} icon={Eye} color="purple" />
         </div>
       )}
 

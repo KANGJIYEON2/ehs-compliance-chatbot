@@ -54,6 +54,9 @@ pnpm-debug.log*
 Thumbs.db
 Desktop.ini
 
+# ── Uploads ──
+uploads/
+
 # ── Temporary ──
 *.tmp
 *.bak

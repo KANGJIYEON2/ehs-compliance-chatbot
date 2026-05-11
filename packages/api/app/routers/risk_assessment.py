@@ -150,6 +150,9 @@ def update_status(
     a = db.query(RiskAssessment).filter(RiskAssessment.id == assessment_id).first()
     if not a:
         raise HTTPException(status_code=404)
+    site = db.query(Site).filter(Site.id == a.site_id).first()
+    if not site or site.company_id != user.company_id:
+        raise HTTPException(status_code=404)
 
     a.status = req.status
     a.updated_at = datetime.utcnow()

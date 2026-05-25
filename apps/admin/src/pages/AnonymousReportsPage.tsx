@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { apiFetch } from "../lib/api";
-import { MessageSquareWarning, CheckCircle2, Clock, AlertTriangle } from "lucide-react";
+import { MessageSquareWarning, CheckCircle2, Clock } from "lucide-react";
 
 interface Report {
   id: string;

@@ -9,7 +9,7 @@ import {
 import {
   Newspaper, Shield, ArrowRight, AlertTriangle, CheckCircle2,
   Clock, Eye, FileDown, TrendingUp, TrendingDown, Info, Plus,
-  Mic, MessageSquareWarning, HelpCircle, ClipboardCheck,
+  Mic, MessageSquareWarning, ClipboardCheck,
 } from "lucide-react";
 
 interface NewsItem {

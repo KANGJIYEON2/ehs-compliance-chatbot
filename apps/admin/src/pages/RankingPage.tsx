@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { apiFetch } from "../lib/api";
-import { Trophy, Medal, TrendingUp } from "lucide-react";
+import { Trophy, TrendingUp } from "lucide-react";
 
 interface RankItem {
   user_id: string;

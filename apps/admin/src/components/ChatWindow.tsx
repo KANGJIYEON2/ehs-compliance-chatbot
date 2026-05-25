@@ -29,7 +29,7 @@ export default function ChatWindow() {
   const [useLaw, setUseLaw] = useState(true);
   const [useRule, setUseRule] = useState(true);
   const [topk, setTopk] = useState(5);
-  const [ctxChars, setCtxChars] = useState(6000);
+  const [ctxChars] = useState(6000);
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {

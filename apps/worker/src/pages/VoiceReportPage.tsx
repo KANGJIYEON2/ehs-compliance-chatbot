@@ -7,7 +7,7 @@ export default function VoiceReportPage() {
   const navigate = useNavigate();
   const [sites, setSites] = useState<{id:string;name:string}[]>([]);
   const [siteId, setSiteId] = useState("");
-  const [recording, setRecording] = useState(false);
+  const [, setRecording] = useState(false);
   const [step, setStep] = useState<"idle"|"recording"|"processing"|"review"|"done">("idle");
   const [transcript, setTranscript] = useState("");
   const [parsed, setParsed] = useState<any>(null);

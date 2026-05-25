@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { apiFetch } from "../lib/api";
-import { MessageSquareWarning, CheckCircle2, Copy } from "lucide-react";
+import { CheckCircle2, Copy } from "lucide-react";
 
 export default function AnonymousReportPage() {
   const [sites, setSites] = useState<{id:string;name:string}[]>([]);

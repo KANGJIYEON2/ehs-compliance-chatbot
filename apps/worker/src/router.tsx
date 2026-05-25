@@ -10,8 +10,6 @@ import RankingPage from "./pages/RankingPage";
 import SafetyGuidePage from "./pages/SafetyGuidePage";
 import RiskScoresPage from "./pages/RiskScoresPage";
 
-const basename = import.meta.env.VITE_BASE_PATH || "/";
-
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
   {
@@ -28,4 +26,4 @@ export const router = createBrowserRouter([
       { path: "my", element: <MyPage /> },
     ],
   },
-], { basename });
+]);

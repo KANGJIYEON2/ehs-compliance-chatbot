@@ -30,8 +30,6 @@ services:
       - CORS_ORIGINS=https://safety-ai.team-ieum.com,http://safety-ai.team-ieum.com
       - PORT=8000
       - WORKERS=2
-    ports:
-      - "8000:8000"
     volumes:
       - ./packages/api/vector_db_law:/app/vector_db_law:ro
       - ./packages/api/vector_db_rule:/app/vector_db_rule:ro
@@ -41,6 +39,9 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
+    networks:
+      - default
+      - susemi_internal
 
   # ── Admin Web (React) ──
   admin:
@@ -49,10 +50,11 @@ services:
       args:
         VITE_API_URL: ""
     restart: unless-stopped
-    ports:
-      - "3000:80"
     depends_on:
       - api
+    networks:
+      - default
+      - susemi_internal
 
   # ── Worker PWA (React) ──
   worker:
@@ -61,11 +63,16 @@ services:
       args:
         VITE_API_URL: ""
     restart: unless-stopped
-    ports:
-      - "3001:80"
     depends_on:
       - api
+    networks:
+      - default
+      - susemi_internal
 
 volumes:
   pgdata:
   uploads:
+
+networks:
+  susemi_internal:
+    external: true

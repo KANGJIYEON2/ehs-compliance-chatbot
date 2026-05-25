@@ -27,7 +27,7 @@ services:
       - JWT_SECRET_KEY=${JWT_SECRET_KEY:?Set JWT_SECRET_KEY in .env}
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - LAW_API_KEY=${LAW_API_KEY:-}
-      - CORS_ORIGINS=http://localhost,http://localhost:80
+      - CORS_ORIGINS=https://safety-ai.team-ieum.com,http://safety-ai.team-ieum.com,http://localhost,http://localhost:80
       - PORT=8000
       - WORKERS=2
     volumes:

@@ -1,0 +1,32 @@
+:8080 {
+    encode gzip zstd
+
+    # API
+    handle /api/* {
+        reverse_proxy api:8000
+    }
+
+    handle /health {
+        reverse_proxy api:8000
+    }
+
+    handle /static/* {
+        reverse_proxy api:8000
+    }
+
+    # Worker PWA
+    handle /worker/* {
+        reverse_proxy worker:80
+    }
+
+    # Admin (default)
+    handle {
+        reverse_proxy admin:80
+    }
+
+    log {
+        output stdout
+        format console
+        level INFO
+    }
+}

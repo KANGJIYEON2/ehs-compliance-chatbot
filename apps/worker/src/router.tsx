@@ -26,4 +26,4 @@ export const router = createBrowserRouter([
       { path: "my", element: <MyPage /> },
     ],
   },
-]);
+], { basename: "/worker" });

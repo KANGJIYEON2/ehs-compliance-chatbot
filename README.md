@@ -2,11 +2,11 @@
   <img src="https://img.shields.io/badge/SafetyAI-EHS%20Platform-0066FF?style=for-the-badge&logo=shield&logoColor=white" alt="SafetyAI" />
 </p>
 
-<h1 align="center">SafetyAI — Enterprise EHS Risk Management Platform</h1>
+<h1 align="center">SafetyAI — 기업형 EHS 리스크 관리 플랫폼</h1>
 
 <p align="center">
-  AI-powered Environment, Health & Safety management SaaS with dual-track architecture<br/>
-  <strong>Admin Web Dashboard</strong> (18 pages) + <strong>Worker Mobile PWA</strong> (9 pages)
+  AI 기반 산업안전보건(EHS) 관리 SaaS — 관리자-작업자 듀얼 트랙 아키텍처<br/>
+  <strong>관리자 웹 대시보드</strong> (18페이지) + <strong>작업자 모바일 PWA</strong> (9페이지)
 </p>
 
 <p align="center">
@@ -19,125 +19,125 @@
 </p>
 
 <p align="center">
-  <a href="https://safety-ai.team-ieum.com">Live Demo</a> &middot;
-  <a href="#quick-start">Quick Start</a> &middot;
-  <a href="#api-reference">API Reference</a> &middot;
-  <a href="#architecture">Architecture</a>
+  <a href="https://safety-ai.team-ieum.com">라이브 데모</a> &middot;
+  <a href="#빠른-시작">빠른 시작</a> &middot;
+  <a href="#api-레퍼런스">API 레퍼런스</a> &middot;
+  <a href="#아키텍처">아키텍처</a>
 </p>
 
 ---
 
-## Why I Built This
+## 만들게 된 이유
 
-Korean workplaces face a serious industrial safety challenge. In 2022 alone, over 2,000 workers died in occupational accidents. The **Serious Accidents Punishment Act** (중대재해처벌법) now holds executives criminally liable for safety failures — yet most small-to-medium manufacturers still manage safety with paper checklists and Excel spreadsheets.
+한국의 산업 현장은 심각한 안전 과제에 직면해 있습니다. 2022년 한 해에만 산업재해로 **2,000명 이상의 근로자가 사망**했습니다. **중대재해처벌법**은 안전 조치 실패에 대해 경영책임자에게 형사 책임을 부과하지만, 여전히 대부분의 중소 제조업체는 종이 체크리스트와 엑셀로 안전을 관리하고 있습니다.
 
-I wanted to build a platform that:
+이 플랫폼을 만든 이유:
 
-1. **Eliminates paper-based safety management** — digitize incident reporting, TBM meetings, risk assessments
-2. **Makes AI practical for safety teams** — not a chatbot gimmick, but embedded AI that analyzes root causes, predicts risks, and generates actionable compliance checklists
-3. **Bridges the language gap** — foreign workers (Vietnamese, Cambodian, Nepali, Myanmar, English) get safety instructions in their native language via QR codes
-4. **Empowers workers, not just managers** — anonymous reporting, voice-based incident submission, gamified safety behavior
+1. **종이 기반 안전관리 탈피** — 사고 보고, TBM 회의, 위험성평가를 디지털화
+2. **안전팀을 위한 실용적 AI** — 단순 챗봇이 아닌, 근본 원인을 분석하고 위험을 예측하며 법적 근거 체크리스트를 자동 생성하는 내장형 AI
+3. **언어 장벽 해소** — 외국인 근로자(베트남, 캄보디아, 네팔, 미얀마, 영어)가 QR코드로 모국어 안전수칙을 확인
+4. **관리자뿐 아니라 작업자도** — 익명 제보, 음성 기반 사고 접수, 게이미피케이션으로 안전 행동 유도
 
-This started as a RAG-based law compliance chatbot, then evolved into a full-stack EHS platform after realizing that legal search alone doesn't save lives — **proactive risk management** does.
+처음에는 RAG 기반 법령 검색 챗봇으로 시작했지만, 법률 검색만으로는 생명을 구할 수 없다는 것을 깨닫고 **선제적 리스크 관리 플랫폼**으로 발전시켰습니다.
 
 ---
 
-## Live Demo
+## 라이브 데모
 
 > **https://safety-ai.team-ieum.com**
 
-| Role | Email | Password | Access |
-|------|-------|----------|--------|
-| Super Admin | `superadmin@safetyai.kr` | `super123` | Platform-wide management |
-| Admin | `admin@hankook-steel.kr` | `admin123` | Full company access (Admin dashboard) |
-| Field Manager | `park.jm@hankook-steel.kr` | `field123` | Assigned site only |
-| Worker | `kim.worker@hankook-steel.kr` | `worker123` | Worker PWA (`/worker/`) |
+| 역할 | 이메일 | 비밀번호 | 접근 범위 |
+|------|--------|----------|-----------|
+| 슈퍼관리자 | `superadmin@safetyai.kr` | `super123` | 플랫폼 전체 관리 |
+| 관리자 | `admin@hankook-steel.kr` | `admin123` | 회사 전체 접근 (관리자 대시보드) |
+| 현장담당자 | `park.jm@hankook-steel.kr` | `field123` | 배정된 사업장만 |
+| 작업자 | `kim.worker@hankook-steel.kr` | `worker123` | 작업자 PWA (`/worker/`) |
 
-**Admin Dashboard:** https://safety-ai.team-ieum.com
-**Worker PWA:** https://safety-ai.team-ieum.com/worker/
-
----
-
-## Key Features
-
-### Admin Track (Web Dashboard)
-
-| Feature | What it does |
-|---------|-------------|
-| **Incident Management** | 9 incident types, 4 severity levels, status workflow (reported → investigating → resolved → monitoring), assignee + due date tracking |
-| **AI Root Cause Analysis** | GPT-4o analyzes incidents → root causes, contributing factors, prevention checklists, legal basis |
-| **Legal Compliance (RAG)** | FAISS vector search (14,500+ law/rule entries) + National Law API → relevant statutes, employer obligations, penalties |
-| **Dashboard & Analytics** | KPI cards, trend charts (Recharts), AI-generated insights, overdue warnings |
-| **Monthly PDF Reports** | Auto-generated reports with stats breakdown + AI executive summary |
-| **TBM Digitization** | AI generates pre-shift safety meeting agendas, tracks attendance |
-| **Risk Assessment** | AI identifies hazards → risk matrix → mitigation measures → legal requirements |
-| **Anonymous Reports** | Workers submit tips without identity → AI risk classification → admin response loop |
-| **Multilingual Safety Guides** | Write in Korean → GPT translates to 5 languages → QR code → training acknowledgment |
-| **Gamification** | Points, team rankings, AI daily quizzes, risk prediction scores |
-| **Notifications** | Real-time alerts for assignments, overdue items, new reports |
-
-### Worker Track (Mobile PWA)
-
-| Feature | What it does |
-|---------|-------------|
-| **Voice Report** | Speak into phone → Whisper STT → GPT structures the data → auto-creates incident |
-| **Anonymous Tips** | Zero-identity reporting, token-based status checking |
-| **Safety Quiz** | AI generates daily questions, +20 points per correct answer |
-| **Team Ranking** | Gamified safety competition with medals |
-| **Safety Guide Viewer** | QR scan → multilingual safety instructions → acknowledge completion |
-| **Risk Scores** | Visual risk levels for each process in your site |
-| **My Page** | Points history, activity log, personal ranking |
+**관리자 대시보드:** https://safety-ai.team-ieum.com
+**작업자 PWA:** https://safety-ai.team-ieum.com/worker/
 
 ---
 
-## Architecture
+## 주요 기능
+
+### 관리자 트랙 (웹 대시보드 — 18페이지)
+
+| 기능 | 설명 |
+|------|------|
+| **사고/아차사고 관리** | 9개 유형, 4단계 심각도, 상태 워크플로우 (접수 → 조치중 → 완료 → 재발관리), 담당자 배정 + 기한 관리 |
+| **AI 원인 분석** | GPT-4o가 사고 분석 → 근본 원인, 기여 요인, 예방 체크리스트, 법적 근거 자동 생성 |
+| **법령 컴플라이언스 (RAG)** | FAISS 벡터 검색 (14,500+ 법령/규칙 엔트리) + 국가법령정보센터 API → 관련 법조문, 사업주 의무, 벌칙 |
+| **대시보드 & 분석** | KPI 카드, 추이 차트 (Recharts), AI 인사이트, 기한 초과 경고 |
+| **월간 PDF 리포트** | 유형별/심각도별/상태별 통계 + AI 요약이 포함된 자동 생성 보고서 |
+| **TBM 디지털화** | AI가 작업 전 안전회의 안건 자동 생성, 참석자 관리 |
+| **위험성평가** | AI가 유해위험요인 식별 → 위험도 매트릭스 → 감소대책 → 법적 요건 분석 |
+| **익명 제보 관리** | 작업자가 신원 노출 없이 제보 → AI 위험등급 분류 → 관리자 피드백 |
+| **다국어 안전수칙** | 한국어 작성 → GPT 5개 국어 번역 → QR코드 생성 → 교육 이수 확인 |
+| **게이미피케이션** | 포인트, 팀 랭킹, AI 일일 퀴즈, 위험 예측 점수 |
+| **알림 시스템** | 사고 배정, 기한 초과, 신규 제보 실시간 알림 |
+
+### 작업자 트랙 (모바일 PWA — 9페이지)
+
+| 기능 | 설명 |
+|------|------|
+| **음성 보고** | 말하기 → Whisper STT → GPT 구조화 파싱 → 사고 자동 등록 |
+| **익명 제보** | 신원 비저장, 토큰 기반 결과 확인 |
+| **안전 퀴즈** | AI가 매일 새 문제 생성, 정답 시 +20 포인트 |
+| **팀 랭킹** | 게이미피케이션 기반 안전 경쟁, 메달 표시 |
+| **안전수칙 조회** | QR 스캔 → 다국어 안전수칙 → 교육 이수 확인 |
+| **위험 예측** | 사업장 공정별 위험도 스코어 시각화 |
+| **마이페이지** | 포인트 현황, 활동 내역, 개인 랭킹 |
+
+---
+
+## 아키텍처
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                     Nginx Reverse Proxy                       │
-│   /           → Admin React App                              │
-│   /worker/    → Worker React PWA                             │
-│   /api/       → FastAPI Backend                              │
+│                     Nginx 리버스 프록시                        │
+│   /           → 관리자 React 앱                               │
+│   /worker/    → 작업자 React PWA                              │
+│   /api/       → FastAPI 백엔드                                │
 ├─────────────────────────────────────────────────────────────┤
 │                                                              │
 │  ┌──────────────────────┐   ┌────────────────────────────┐  │
-│  │   Admin Dashboard     │   │    Worker PWA (Mobile)     │  │
+│  │   관리자 대시보드       │   │    작업자 PWA (모바일)      │  │
 │  │   React 19 + Vite 7   │   │    React 19 + Vite 7      │  │
-│  │   18 pages            │   │    9 pages                 │  │
-│  │   TailwindCSS 4       │   │    Bottom nav + dark theme │  │
+│  │   18 페이지            │   │    9 페이지                │  │
+│  │   TailwindCSS 4       │   │    하단 내비 + 다크 테마    │  │
 │  └──────────┬───────────┘   └──────────────┬─────────────┘  │
 │             │                               │                │
 │             └───────────────┬───────────────┘                │
 │                             ▼                                │
 │  ┌──────────────────────────────────────────────────────┐   │
-│  │              FastAPI Backend (Python 3.11)             │   │
-│  │   50+ REST endpoints · JWT 4-role auth · SQLAlchemy   │   │
+│  │              FastAPI 백엔드 (Python 3.11)              │   │
+│  │   50+ REST 엔드포인트 · JWT 4단계 권한 · SQLAlchemy    │   │
 │  ├──────────────────────────────────────────────────────┤   │
-│  │                   AI Agent Layer                       │   │
+│  │                   AI 에이전트 레이어                    │   │
 │  │  ┌──────────┬────────────┬──────────┬─────────────┐  │   │
 │  │  │NewsAgent │IncidentAg  │ LawAgent │ VoiceAgent  │  │   │
-│  │  │RSS+GPT   │Root cause  │ RAG+Law  │ Whisper+GPT │  │   │
+│  │  │RSS+GPT   │원인분석     │ RAG+법령 │ Whisper+GPT │  │   │
 │  │  └──────────┴────────────┴──────────┴─────────────┘  │   │
-│  │         BaseAgent (shared OpenAI client)               │   │
+│  │         BaseAgent (공유 OpenAI 클라이언트)              │   │
 │  ├──────────────────────────────────────────────────────┤   │
-│  │  FAISS Vector DBs        PostgreSQL 16                │   │
-│  │  784 laws + 13,802 rules  22 tables                   │   │
+│  │  FAISS 벡터 DB            PostgreSQL 16               │   │
+│  │  법률 784건 + 규칙 13,802건  22개 테이블               │   │
 │  └──────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Tech Stack
+### 기술 스택
 
-| Layer | Technology |
-|-------|-----------|
-| **Backend** | FastAPI, SQLAlchemy 2.0, Alembic, Pydantic, JWT (python-jose + bcrypt) |
+| 영역 | 기술 |
+|------|------|
+| **백엔드** | FastAPI, SQLAlchemy 2.0, Alembic, Pydantic, JWT (python-jose + bcrypt) |
 | **AI/ML** | OpenAI GPT-4o-mini, Whisper-1, text-embedding-3-small, FAISS |
-| **Frontend** | React 19, TypeScript, Vite 7, TailwindCSS 4, Zustand, Recharts, Framer Motion |
-| **Database** | PostgreSQL 16 (prod) / SQLite (dev), 22 tables |
-| **PDF** | pdfplumber + pytesseract (extraction), ReportLab (generation) |
-| **Infrastructure** | Docker, docker-compose, Nginx, AWS EC2 |
+| **프론트엔드** | React 19, TypeScript, Vite 7, TailwindCSS 4, Zustand, Recharts, Framer Motion |
+| **데이터베이스** | PostgreSQL 16 (운영) / SQLite (개발), 22개 테이블 |
+| **PDF** | pdfplumber + pytesseract (추출), ReportLab (생성) |
+| **인프라** | Docker, docker-compose, Nginx, AWS EC2 |
 
-### Database Schema (22 tables)
+### 데이터베이스 스키마 (22개 테이블)
 
 ```
 companies ─┬─ sites ─┬─ departments
@@ -159,331 +159,331 @@ companies ─┬─ sites ─┬─ departments
 
 ---
 
-## Quick Start
+## 빠른 시작
 
-### Option 1: Docker (Recommended)
+### 방법 1: Docker (권장)
 
 ```bash
-# Clone
+# 클론
 git clone https://github.com/your-username/ehs-compliance-chatbot.git
 cd ehs-compliance-chatbot
 
-# Configure environment
+# 환경 변수 설정
 cp .env.example .env
-# Edit .env: set JWT_SECRET_KEY, OPENAI_API_KEY
+# .env 편집: JWT_SECRET_KEY, OPENAI_API_KEY 설정
 
-# Start all services
+# 전체 서비스 실행
 docker-compose up --build
 
-# Seed test data (in another terminal)
+# 데모 데이터 투입 (다른 터미널에서)
 docker-compose exec api python scripts/seed_demo_data.py
 
-# Access
-# Admin:  http://localhost
-# Worker: http://localhost/worker/
-# API:    http://localhost/api/docs
+# 접속
+# 관리자:  http://localhost
+# 작업자:  http://localhost/worker/
+# API:     http://localhost/api/docs
 ```
 
-### Option 2: Local Development
+### 방법 2: 로컬 개발
 
 ```bash
-# 1. Backend
+# 1. 백엔드
 cd packages/api
 pip install -r requirements.txt
-cp .env.example .env  # Edit with your keys
+cp .env.example .env  # API 키 등 설정
 alembic upgrade head
-python scripts/seed_demo_data.py  # Populate test data
+python scripts/seed_demo_data.py  # 데모 데이터 투입
 uvicorn app.main:app --reload --port 8000
 
-# 2. Admin Frontend (new terminal)
+# 2. 관리자 프론트엔드 (새 터미널)
 cd apps/admin
 npm install
 npm run dev  # → http://localhost:3000
 
-# 3. Worker Frontend (new terminal)
+# 3. 작업자 프론트엔드 (새 터미널)
 cd apps/worker
 npm install
 npm run dev  # → http://localhost:3001
 ```
 
-### Environment Variables
+### 환경 변수
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `JWT_SECRET_KEY` | Yes | Random secret for JWT signing (min 32 chars) |
-| `OPENAI_API_KEY` | Yes | OpenAI API key (for AI features) |
-| `EHS_DATABASE_URL` | No | DB URL (default: `sqlite:///./ehs.db`) |
-| `LAW_API_KEY` | No | Korean National Law API key |
-| `CORS_ORIGINS` | No | Allowed origins (default: `*`) |
-| `DB_PASSWORD` | No | PostgreSQL password (Docker only) |
-
----
-
-## API Reference
-
-The platform exposes **50+ REST endpoints** organized into 19 route groups.
-
-<details>
-<summary><strong>Authentication & Users</strong></summary>
-
-```
-POST /api/auth/register        # Company signup (creates company + admin)
-POST /api/auth/login           # Returns access + refresh JWT tokens
-POST /api/auth/refresh         # Refresh access token
-GET  /api/auth/me              # Current user profile
-POST /api/auth/users           # Admin creates users (field_manager/worker)
-```
-</details>
-
-<details>
-<summary><strong>Sites & Master Data</strong></summary>
-
-```
-CRUD /api/sites                          # Site management
-CRUD /api/sites/:id/departments          # Departments within site
-CRUD /api/sites/:id/processes            # Production processes
-CRUD /api/sites/:id/equipment            # Equipment registry
-CRUD /api/sites/:id/work-zones           # Physical work zones
-```
-</details>
-
-<details>
-<summary><strong>Incidents</strong></summary>
-
-```
-GET  /api/incidents            # List with filter/paging (type, severity, status, date)
-POST /api/incidents            # Create incident
-GET  /api/incidents/:id        # Detail view
-PATCH /api/incidents/:id       # Update (status, assignee, due_date)
-DELETE /api/incidents/:id       # Delete
-POST /api/incidents/:id/files  # Upload attachment (streaming, 10MB max)
-DELETE /api/incidents/:id/files/:fid  # Remove attachment
-```
-</details>
-
-<details>
-<summary><strong>AI Analysis (cached 24h)</strong></summary>
-
-```
-GET  /api/ai/incidents/:id/results    # Load all saved analyses
-POST /api/ai/incidents/:id/analyze    # Root cause + risk level + contributing factors
-POST /api/ai/incidents/:id/checklist  # Prevention checklist generation
-POST /api/ai/incidents/:id/legal      # Related laws + penalties + employer obligations
-POST /api/ai/legal-basis              # Generic law search (not incident-specific)
-```
-</details>
-
-<details>
-<summary><strong>Analytics & Reports</strong></summary>
-
-```
-GET /api/analytics/summary     # Total count + by_status + by_severity
-GET /api/analytics/by-type     # Incident type breakdown
-GET /api/analytics/by-month    # Monthly trend (12 months)
-GET /api/analytics/by-status   # Status distribution
-GET /api/analytics/insights    # AI-generated insights (trends, patterns, risks)
-GET /api/reports/monthly       # PDF report download
-```
-</details>
-
-<details>
-<summary><strong>Voice Report</strong></summary>
-
-```
-POST /api/voice/transcribe     # Audio file → text (Whisper STT)
-POST /api/voice/parse          # Text → structured incident data (GPT)
-POST /api/voice/submit         # Parsed data → create incident record
-```
-</details>
-
-<details>
-<summary><strong>Anonymous Reports</strong></summary>
-
-```
-POST  /api/anonymous-reports              # Submit (no auth required)
-GET   /api/anonymous-reports/check/:token # Check status by anonymous token
-GET   /api/anonymous-reports/admin        # Admin: list all reports
-PATCH /api/anonymous-reports/admin/:id    # Admin: respond/resolve
-```
-</details>
-
-<details>
-<summary><strong>TBM, Risk Assessment, Guides, Gamification, Notifications</strong></summary>
-
-```
-# TBM (Toolbox Meeting)
-POST /api/tbm                  # Create session (AI generates agenda)
-GET  /api/tbm                  # List sessions
-GET  /api/tbm/:id              # Detail with attendees
-POST /api/tbm/:id/attend       # Record attendance
-
-# Risk Assessment
-POST  /api/risk-assessment              # AI analysis (hazards/matrix/measures/legal)
-GET   /api/risk-assessment              # List assessments
-GET   /api/risk-assessment/:id          # Detail
-PATCH /api/risk-assessment/:id/status   # Update status
-
-# Safety Guides
-POST /api/safety-guide                 # Create guide (Korean)
-GET  /api/safety-guide/list            # List guides
-POST /api/safety-guide/:id/translate   # GPT translate (vi/en/km/ne/my)
-GET  /api/safety-guide/qr/:id         # QR code PNG
-GET  /api/safety-guide/:id            # Public view (no auth, for QR scan)
-POST /api/safety-guide/:id/ack        # Acknowledge training
-
-# Gamification
-GET  /api/gamification/ranking                  # Team ranking
-GET  /api/gamification/my-points                # Point history
-POST /api/gamification/award                    # Award points (admin)
-GET  /api/gamification/quiz/today               # Daily AI quiz
-POST /api/gamification/quiz/:id/answer          # Submit answer
-GET  /api/gamification/risk-scores              # Risk scores
-POST /api/gamification/risk-scores/calculate    # Recalculate
-
-# Notifications
-GET  /api/notifications           # List (filter: unread_only)
-POST /api/notifications/:id/read  # Mark read
-POST /api/notifications/read-all  # Mark all read
-```
-</details>
+| 변수 | 필수 | 설명 |
+|------|------|------|
+| `JWT_SECRET_KEY` | O | JWT 서명용 랜덤 시크릿 (최소 32자) |
+| `OPENAI_API_KEY` | O | OpenAI API 키 (AI 기능 사용) |
+| `EHS_DATABASE_URL` | X | DB URL (기본값: `sqlite:///./ehs.db`) |
+| `LAW_API_KEY` | X | 국가법령정보센터 API 키 |
+| `CORS_ORIGINS` | X | 허용 오리진 (기본값: `*`) |
+| `DB_PASSWORD` | X | PostgreSQL 비밀번호 (Docker 전용) |
 
 ---
 
-## Authorization (4-Role System)
+## API 레퍼런스
+
+플랫폼은 19개 라우트 그룹에 걸쳐 **50개 이상의 REST 엔드포인트**를 제공합니다.
+
+<details>
+<summary><strong>인증 & 사용자</strong></summary>
 
 ```
-superadmin ─── Platform-wide: all companies, stats, admin creation
+POST /api/auth/register        # 회사 등록 (회사 + 관리자 생성)
+POST /api/auth/login           # JWT 토큰 발급 (access + refresh)
+POST /api/auth/refresh         # 토큰 갱신
+GET  /api/auth/me              # 현재 사용자 프로필
+POST /api/auth/users           # 관리자가 사용자 생성 (현장담당자/작업자)
+```
+</details>
+
+<details>
+<summary><strong>사업장 & 마스터데이터</strong></summary>
+
+```
+CRUD /api/sites                          # 사업장 관리
+CRUD /api/sites/:id/departments          # 부서
+CRUD /api/sites/:id/processes            # 생산 공정
+CRUD /api/sites/:id/equipment            # 설비
+CRUD /api/sites/:id/work-zones           # 작업 구역
+```
+</details>
+
+<details>
+<summary><strong>사고/아차사고</strong></summary>
+
+```
+GET  /api/incidents            # 목록 (필터/페이징: 유형, 심각도, 상태, 날짜)
+POST /api/incidents            # 사고 등록
+GET  /api/incidents/:id        # 상세 조회
+PATCH /api/incidents/:id       # 수정 (상태, 담당자, 기한)
+DELETE /api/incidents/:id      # 삭제
+POST /api/incidents/:id/files  # 첨부파일 업로드 (스트리밍, 10MB 제한)
+DELETE /api/incidents/:id/files/:fid  # 첨부파일 삭제
+```
+</details>
+
+<details>
+<summary><strong>AI 분석 (24시간 캐싱)</strong></summary>
+
+```
+GET  /api/ai/incidents/:id/results    # 저장된 분석 결과 전체 조회
+POST /api/ai/incidents/:id/analyze    # 근본 원인 + 위험 수준 + 기여 요인
+POST /api/ai/incidents/:id/checklist  # 예방 체크리스트 생성
+POST /api/ai/incidents/:id/legal      # 관련 법령 + 벌칙 + 사업주 의무
+POST /api/ai/legal-basis              # 일반 법령 검색 (사고 비종속)
+```
+</details>
+
+<details>
+<summary><strong>분석 & 리포트</strong></summary>
+
+```
+GET /api/analytics/summary     # 총 건수 + 상태별 + 심각도별
+GET /api/analytics/by-type     # 사고 유형별 분포
+GET /api/analytics/by-month    # 월별 추이 (12개월)
+GET /api/analytics/by-status   # 상태별 분포
+GET /api/analytics/insights    # AI 인사이트 (추세, 패턴, 위험)
+GET /api/reports/monthly       # PDF 리포트 다운로드
+```
+</details>
+
+<details>
+<summary><strong>음성 보고</strong></summary>
+
+```
+POST /api/voice/transcribe     # 오디오 → 텍스트 (Whisper STT)
+POST /api/voice/parse          # 텍스트 → 구조화된 사고 데이터 (GPT)
+POST /api/voice/submit         # 파싱 데이터 → 사고 등록
+```
+</details>
+
+<details>
+<summary><strong>익명 제보</strong></summary>
+
+```
+POST  /api/anonymous-reports              # 제보 접수 (인증 불필요)
+GET   /api/anonymous-reports/check/:token # 토큰으로 상태 확인
+GET   /api/anonymous-reports/admin        # 관리자: 제보 목록
+PATCH /api/anonymous-reports/admin/:id    # 관리자: 응답/해결
+```
+</details>
+
+<details>
+<summary><strong>TBM, 위험성평가, 안전수칙, 게이미피케이션, 알림</strong></summary>
+
+```
+# TBM (작업 전 안전회의)
+POST /api/tbm                  # 세션 생성 (AI 안건 자동 생성)
+GET  /api/tbm                  # 세션 목록
+GET  /api/tbm/:id              # 상세 (참석자 포함)
+POST /api/tbm/:id/attend       # 참석 기록
+
+# 위험성평가
+POST  /api/risk-assessment              # AI 분석 (유해요인/매트릭스/대책/법령)
+GET   /api/risk-assessment              # 평가 목록
+GET   /api/risk-assessment/:id          # 상세
+PATCH /api/risk-assessment/:id/status   # 상태 변경
+
+# 안전수칙 (다국어)
+POST /api/safety-guide                 # 가이드 작성 (한국어)
+GET  /api/safety-guide/list            # 목록
+POST /api/safety-guide/:id/translate   # GPT 번역 (vi/en/km/ne/my)
+GET  /api/safety-guide/qr/:id         # QR코드 PNG
+GET  /api/safety-guide/:id            # 공개 조회 (인증 불필요, QR 스캔용)
+POST /api/safety-guide/:id/ack        # 교육 이수 확인
+
+# 게이미피케이션
+GET  /api/gamification/ranking                  # 팀 랭킹
+GET  /api/gamification/my-points                # 내 포인트 내역
+POST /api/gamification/award                    # 포인트 부여 (관리자)
+GET  /api/gamification/quiz/today               # 오늘의 AI 퀴즈
+POST /api/gamification/quiz/:id/answer          # 퀴즈 응답
+GET  /api/gamification/risk-scores              # 위험도 점수
+POST /api/gamification/risk-scores/calculate    # 재계산
+
+# 알림
+GET  /api/notifications           # 목록 (필터: 읽지 않은 것만)
+POST /api/notifications/:id/read  # 읽음 처리
+POST /api/notifications/read-all  # 전체 읽음 처리
+```
+</details>
+
+---
+
+## 권한 체계 (4단계 역할)
+
+```
+superadmin ─── 플랫폼 전체: 모든 회사, 통계, admin 계정 생성
     │
-    admin ─── Company-wide: sites, users, all data within company
+    admin ─── 회사 전체: 사업장, 사용자, 회사 내 모든 데이터
         │
-        field_manager ─── Assigned site only: incidents, reports, TBM
+        field_manager ─── 배정된 사업장: 사고 관리, 제보, TBM
             │
-            worker ─── Mobile PWA: voice report, tips, quiz, guides
+            worker ─── 모바일 PWA: 음성보고, 제보, 퀴즈, 안전수칙
 ```
 
-Each role inherits permissions downward. Endpoints validate both role and resource ownership (company_id / site_id).
+하위 역할은 상위 역할의 권한을 상속합니다. 모든 엔드포인트는 역할과 리소스 소유권(company_id / site_id)을 동시에 검증합니다.
 
 ---
 
-## Project Structure
+## 프로젝트 구조
 
 ```
 ehs-compliance-chatbot/
-├── packages/api/                    # FastAPI Backend
+├── packages/api/                    # FastAPI 백엔드
 │   ├── app/
-│   │   ├── main.py                  # App factory + router registration
-│   │   ├── config.py                # Pydantic settings
-│   │   ├── database.py              # SQLAlchemy engine
-│   │   ├── dependencies.py          # Auth guards (get_current_user, require_role)
-│   │   ├── models/                  # 13 model files → 22 DB tables
-│   │   ├── routers/                 # 19 route modules → 50+ endpoints
+│   │   ├── main.py                  # 앱 팩토리 + 라우터 등록
+│   │   ├── config.py                # Pydantic 설정
+│   │   ├── database.py              # SQLAlchemy 엔진
+│   │   ├── dependencies.py          # 인증 가드 (get_current_user, require_role)
+│   │   ├── models/                  # 13개 모델 파일 → 22개 DB 테이블
+│   │   ├── routers/                 # 19개 라우트 모듈 → 50+ 엔드포인트
 │   │   └── services/
-│   │       ├── rag_service.py       # FAISS vector search
-│   │       ├── report_service.py    # PDF generation (ReportLab + Korean fonts)
-│   │       ├── law_api_client.py    # National Law Information Center API
-│   │       └── ai_agents/           # 4 specialized AI agents
-│   ├── migrations/                  # Alembic (8 versions)
-│   ├── vector_db_law/               # FAISS index (784 law entries)
-│   ├── vector_db_rule/              # FAISS index (13,802 rule entries)
-│   └── scripts/                     # Utilities + seed scripts
+│   │       ├── rag_service.py       # FAISS 벡터 검색
+│   │       ├── report_service.py    # PDF 생성 (ReportLab + 한글 폰트)
+│   │       ├── law_api_client.py    # 국가법령정보센터 API 클라이언트
+│   │       └── ai_agents/           # 4개 특화 AI 에이전트
+│   ├── migrations/                  # Alembic (8개 마이그레이션)
+│   ├── vector_db_law/               # FAISS 인덱스 (법률 784건)
+│   ├── vector_db_rule/              # FAISS 인덱스 (규칙 13,802건)
+│   └── scripts/                     # 유틸리티 + 시드 스크립트
 │
-├── apps/admin/                      # Admin Web App
+├── apps/admin/                      # 관리자 웹앱
 │   └── src/
-│       ├── pages/                   # 18 page components
-│       ├── components/              # Layout, Sidebar
-│       ├── stores/authStore.ts      # Zustand JWT state
-│       └── lib/api.ts               # API client with auto-refresh
+│       ├── pages/                   # 18개 페이지 컴포넌트
+│       ├── components/              # 레이아웃, 사이드바
+│       ├── stores/authStore.ts      # Zustand JWT 상태 관리
+│       └── lib/api.ts               # JWT 자동 갱신 API 클라이언트
 │
-├── apps/worker/                     # Worker Mobile PWA
+├── apps/worker/                     # 작업자 모바일 PWA
 │   └── src/
-│       ├── pages/                   # 9 mobile pages
+│       ├── pages/                   # 9개 모바일 페이지
 │       ├── components/              # MobileLayout, BottomNav
-│       └── stores/authStore.ts      # Zustand JWT state
+│       └── stores/authStore.ts      # Zustand JWT 상태 관리
 │
-├── nginx/nginx.conf                 # Reverse proxy config
-├── docker-compose.yml               # Full stack orchestration
-└── .env.example                     # Environment template
+├── nginx/nginx.conf                 # 리버스 프록시 설정
+├── docker-compose.yml               # 전체 서비스 오케스트레이션
+└── .env.example                     # 환경 변수 템플릿
 ```
 
 ---
 
-## Deployment (AWS)
+## 배포 (AWS)
 
-The platform is deployed at **https://safety-ai.team-ieum.com** on AWS.
+플랫폼은 AWS에서 **https://safety-ai.team-ieum.com** 으로 운영됩니다.
 
 ```bash
-# On EC2 instance
+# EC2 인스턴스에서
 git clone <repo-url>
 cd ehs-compliance-chatbot
 cp .env.example .env
-# Edit .env with production values
+# .env에 운영 환경 값 설정
 
-# Start
+# 실행
 docker-compose up -d --build
 
-# Seed demo data
+# 데모 데이터 투입
 docker-compose exec api python scripts/seed_demo_data.py
 
-# Logs
+# 로그 확인
 docker-compose logs -f api
 ```
 
-Nginx handles routing:
-- `/` → Admin dashboard
-- `/worker/` → Worker PWA
-- `/api/` → Backend API
-- SSL termination via AWS ALB or Certbot
+Nginx 라우팅:
+- `/` → 관리자 대시보드
+- `/worker/` → 작업자 PWA
+- `/api/` → 백엔드 API
+- SSL 종단: AWS ALB 또는 Certbot
 
 ---
 
-## How to Explore This Project
+## 이 프로젝트 살펴보기
 
-If you're reviewing this as a portfolio piece, here's what to look at:
+포트폴리오로 리뷰하신다면, 아래 부분을 중점적으로 봐주세요:
 
-1. **AI Integration** — Not a wrapper around ChatGPT. Four specialized agents (`packages/api/app/services/ai_agents/`) each with tailored system prompts, structured output parsing, and caching strategies.
+1. **AI 통합** — ChatGPT 래퍼가 아닙니다. 4개의 특화 에이전트(`packages/api/app/services/ai_agents/`)가 각각 맞춤형 시스템 프롬프트, 구조화된 출력 파싱, 캐싱 전략을 갖추고 있습니다.
 
-2. **RAG Pipeline** — Real vector search over 14,500+ Korean safety law/regulation entries. See `packages/api/app/services/rag_service.py` and the `vector_db_*/` directories.
+2. **RAG 파이프라인** — 14,500건 이상의 한국 산업안전 법령/규칙에 대한 실제 벡터 검색. `packages/api/app/services/rag_service.py`와 `vector_db_*/` 디렉토리를 확인하세요.
 
-3. **Dual-Track UX** — Admin gets data-dense dashboards; workers get a mobile-first PWA with voice input, QR scanning, and minimal text entry. Different interfaces for different contexts.
+3. **듀얼 트랙 UX** — 관리자에게는 데이터 밀도 높은 대시보드를, 작업자에게는 음성 입력과 QR 스캔 중심의 모바일 PWA를 제공합니다. 사용 맥락에 맞는 서로 다른 인터페이스입니다.
 
-4. **Security Design** — Anonymous reports store zero user identity (no user_id, no IP, no device fingerprint). JWT with role-based access control, streaming file size validation, CORS configuration.
+4. **보안 설계** — 익명 제보는 사용자 신원을 일절 저장하지 않습니다 (user_id, IP, 디바이스 정보 없음). JWT 기반 역할별 접근 제어, 스트리밍 파일 사이즈 검증, CORS 설정.
 
-5. **Production Architecture** — Docker multi-service orchestration, PostgreSQL with Alembic migrations, Nginx reverse proxy, health checks.
+5. **프로덕션 아키텍처** — Docker 멀티 서비스 오케스트레이션, PostgreSQL + Alembic 마이그레이션, Nginx 리버스 프록시, 헬스체크.
 
-6. **Practical AI Features:**
-   - Voice → structured data pipeline (Whisper + GPT)
-   - Automated risk scoring with weighted factor model
-   - Multilingual translation for safety-critical content
-   - AI-generated meeting agendas based on weather + recent incidents
+6. **실용적 AI 기능:**
+   - 음성 → 구조화 데이터 파이프라인 (Whisper + GPT)
+   - 가중 요인 모델 기반 자동 위험도 스코어링
+   - 안전에 중요한 콘텐츠의 다국어 번역
+   - 날씨 + 최근 사고 기반 AI 회의 안건 자동 생성
 
 ---
 
-## Development Notes
+## 개발 참고
 
 ```bash
-# Create new migration
+# 새 마이그레이션 생성
 cd packages/api
-alembic revision --autogenerate -m "description"
+alembic revision --autogenerate -m "설명"
 alembic upgrade head
 
-# Reset database (dev only)
+# 데이터베이스 초기화 (개발용)
 rm ehs.db
 alembic upgrade head
 python scripts/seed_demo_data.py
 
-# Run with hot reload
+# 핫 리로드 실행
 uvicorn app.main:app --reload --port 8000
 ```
 
 ---
 
-## License
+## 라이선스
 
 MIT
 
 ---
 
 <p align="center">
-  <strong>SafetyAI</strong> — AI-Powered Industrial Safety Risk Management<br/>
-  <sub>Built with FastAPI + React + OpenAI + FAISS | Deployed at safety-ai.team-ieum.com</sub>
+  <strong>SafetyAI</strong> — AI 기반 산업안전 리스크 관리 플랫폼<br/>
+  <sub>FastAPI + React + OpenAI + FAISS | safety-ai.team-ieum.com</sub>
 </p>

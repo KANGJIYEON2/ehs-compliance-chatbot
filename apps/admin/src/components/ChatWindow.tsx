@@ -44,7 +44,7 @@ export default function ChatWindow() {
       const dbs: string[] = [];
       if (useLaw) dbs.push("vector_db_law");
       if (useRule) dbs.push("vector_db_rule");
-      const res = await fetch(`${API_BASE}/ask`, {
+      const res = await fetch(`${API_BASE}/api/rag/ask`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: text, topk, mode, ctx_chars: ctxChars, dbs: dbs.length ? dbs : undefined }),

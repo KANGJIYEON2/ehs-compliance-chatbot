@@ -12,11 +12,13 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY: str = "change-me-in-production"
 
     def validate_jwt_secret(self) -> None:
-        if self.JWT_SECRET_KEY in ("change-me-in-production", "dev-secret-key-change-in-production"):
+        insecure_defaults = ("change-me-in-production", "dev-secret-key-change-in-production")
+        # 약한 시크릿(짧은 길이 포함)도 거부 — HS256 은 시크릿 엔트로피가 곧 보안.
+        if self.JWT_SECRET_KEY in insecure_defaults or len(self.JWT_SECRET_KEY) < 32:
             import warnings
             warnings.warn(
-                "JWT_SECRET_KEY is using an insecure default. "
-                "Set a strong random secret via environment variable for production.",
+                "JWT_SECRET_KEY is insecure (default or <32 chars). "
+                "Set a strong random secret (e.g. `openssl rand -hex 32`) via environment variable.",
                 stacklevel=2,
             )
     JWT_ALGORITHM: str = "HS256"

@@ -16,6 +16,14 @@ from app.dependencies import get_current_user
 
 router = APIRouter(prefix="/api/tbm", tags=["tbm"])
 
+
+def _assert_site_in_company(db: Session, site_id: str, user: User) -> Site:
+    """site 가 호출자 회사 소속인지 검증 (cross-tenant 차단). 아니면 404."""
+    site = db.query(Site).filter(Site.id == site_id).first()
+    if not site or site.company_id != user.company_id:
+        raise HTTPException(status_code=404, detail="사업장을 찾을 수 없습니다")
+    return site
+
 TYPE_LABELS = {
     "caught": "끼임", "fall": "추락", "collision": "충돌", "electric": "감전",
     "fire": "화재", "suffocation": "질식", "falling_object": "낙하물",
@@ -120,6 +128,7 @@ def get_today_tbm(
     user: User = Depends(get_current_user),
 ):
     """오늘의 TBM 조회"""
+    _assert_site_in_company(db, site_id, user)
     today = datetime.utcnow().strftime("%Y-%m-%d")
     session = (
         db.query(TBMSession)
@@ -140,6 +149,7 @@ def get_tbm_history(
     user: User = Depends(get_current_user),
 ):
     """TBM 히스토리"""
+    _assert_site_in_company(db, site_id, user)
     sessions = (
         db.query(TBMSession)
         .options(joinedload(TBMSession.attendees))
@@ -162,6 +172,8 @@ def add_attendee(
     session = db.query(TBMSession).filter(TBMSession.id == session_id).first()
     if not session:
         raise HTTPException(status_code=404)
+    # cross-tenant 차단: 세션의 사업장이 호출자 회사 소속인지 검증
+    _assert_site_in_company(db, session.site_id, user)
 
     attendee = TBMAttendee(
         session_id=session_id,

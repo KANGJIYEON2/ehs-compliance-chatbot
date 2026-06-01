@@ -91,6 +91,14 @@ def award_points(
     if admin.role != UserRole.admin.value:
         raise HTTPException(status_code=403)
 
+    # cross-tenant 차단: 대상 사업장·사용자가 admin 회사 소속인지 검증
+    site = db.query(Site).filter(Site.id == site_id, Site.company_id == admin.company_id).first()
+    if not site:
+        raise HTTPException(status_code=404, detail="사업장을 찾을 수 없습니다")
+    target = db.query(User).filter(User.id == user_id, User.company_id == admin.company_id).first()
+    if not target:
+        raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다")
+
     sp = SafetyPoint(user_id=user_id, site_id=site_id, points=points, reason=reason, reference_id=reference_id)
     db.add(sp)
     db.commit()
@@ -185,6 +193,12 @@ def answer_quiz(
 ):
     quiz = db.query(SafetyQuiz).filter(SafetyQuiz.id == quiz_id).first()
     if not quiz:
+        raise HTTPException(status_code=404)
+    # cross-tenant 차단: 퀴즈의 사업장이 호출자 회사 소속인지 검증
+    quiz_site = db.query(Site).filter(
+        Site.id == quiz.site_id, Site.company_id == user.company_id
+    ).first()
+    if not quiz_site:
         raise HTTPException(status_code=404)
 
     # 중복 답변 방지

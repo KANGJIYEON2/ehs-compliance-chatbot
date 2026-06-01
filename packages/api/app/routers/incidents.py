@@ -163,6 +163,13 @@ def update_incident(
 
     # 담당자 배정 시 알림
     if "assignee_id" in update_data and update_data["assignee_id"]:
+        # cross-tenant 차단: 배정 대상이 같은 회사 사용자인지 검증
+        assignee = db.query(User).filter(
+            User.id == update_data["assignee_id"],
+            User.company_id == user.company_id,
+        ).first()
+        if not assignee:
+            raise HTTPException(status_code=404, detail="담당자를 찾을 수 없습니다")
         from app.routers.notifications import create_notification
         create_notification(
             db, update_data["assignee_id"], "incident_assigned",

@@ -112,6 +112,12 @@ def translate_guide(
     guide = db.query(SafetyGuide).filter(SafetyGuide.id == guide_id).first()
     if not guide:
         raise HTTPException(status_code=404)
+    # cross-tenant 차단: 가이드의 사업장이 호출자 회사 소속인지 검증 (유료 GPT 호출 + content_ko 노출 방지)
+    site = db.query(Site).filter(
+        Site.id == guide.site_id, Site.company_id == user.company_id
+    ).first()
+    if not site:
+        raise HTTPException(status_code=404)
 
     # 이미 번역 있으면 반환
     existing = db.query(SafetyGuideTranslation).filter(
